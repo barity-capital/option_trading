@@ -56,4 +56,4 @@ def information_for_options(client):
     share_to_purchase = float(delta) * float(contract_size)
 
 
-    return expiry_datetime, share_to_purchase, symbol
+    return expiry_datetime, share_to_purchase, symbol ,delta

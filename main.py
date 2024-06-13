@@ -2,13 +2,19 @@
 A call option is OTM if the underlying price is trading below the strike price of the call. A put option is OTM if the underlying's price is above the put's strike price.
 """
 import ccxt
-from infor_before_trade import information_for_options
+from binance.client import Client
+from binance.exceptions import BinanceAPIException
+from datetime import datetime, timedelta
+import time
+import schedule
+
 import requests
 
-mode = "test"
 
-client_id_testnet = "kXV7l7Pe"
-client_secret_testnet = "cnvhFL3uFdU4YQvlSj6TR7KtbHZWg_g5YYt4rn-WkTw"
+mode = "test"
+print(f"We are in: {mode} mode")
+client_id_testnet = "m_cYdGRs"
+client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
 
 client_id_realnet = "VUSrWKNX"
 client_secret_realnet = "CNIEmjiKy2p-h28O4Mda1QKD8hXJ3duA5rAODdLfvwE"
@@ -16,14 +22,72 @@ client_secret_realnet = "CNIEmjiKy2p-h28O4Mda1QKD8hXJ3duA5rAODdLfvwE"
 if mode == "test":
     client_id = client_id_testnet
     client_secret = client_secret_testnet
+    base_url = 'https://test.deribit.com/api/v2/' # test base url
 else:
     client_id = client_id_realnet
     client_secret = client_secret_realnet
+    base_url = 'https://www.deribit.com/api/v2/'
 
-# Base URL for Deribit API
-base_url = 'https://www.deribit.com/api/v2/'
+print(f"The base url: {base_url} ")
+
 
 # Function to get access token
+def information_for_options(client):
+    markets = client.fetch_markets()
+    server_time = client.fetch_time()
+    # Filter option markets
+    option_markets = [market for market in markets if market['type'] == 'option']
+    # print("Option markets:", option_markets)
+    for i in option_markets:
+        # print(i["info"])
+        filtered_list = []
+        expiry_timestamp = float(i['info']['expiration_timestamp'])/1000
+        # Convert expiry timestamp to datetime
+        expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
+
+        # Calculate current datetime plus 20 weeks
+        current_datetime = datetime.utcnow()
+        twenty_weeks_later = current_datetime + timedelta(weeks=20)
+        # Check if expiry datetime is greater than 20 weeks later
+        if expiry_datetime <= twenty_weeks_later:
+            filtered_list.append(i)
+            # if call option and strike is not none, add to list
+            second_filtered_list = []
+            for item in filtered_list:
+                # if item["strike"] is not None and 
+                if item["optionType"] == "call" and item["strike"] is not None:
+
+                    second_filtered_list.append(item)
+                    # third_filtered_list = []
+                    # # Loop through second filtered list and get contract with longest expiration
+                    # for item in second_filtered_list:
+                    #     expired_time = item["expiration_timestamp"]
+                        
+    #                     if item["expiration_timestamp"] is not None:
+    #                         third_filtered_list.append(item)
+            third_filtered_list = []
+            expiry_timestamp_list = []
+            if len(second_filtered_list) > 0:
+                longest_expiry_contract = max(second_filtered_list, key=lambda x: x['expiry'])
+
+    # print(longest_expiry_contract)
+    # Contract symbol
+    symbol = longest_expiry_contract["id"]
+    # Timestamp of contract            
+    expire_time = float(longest_expiry_contract["info"]["expiration_timestamp"])
+    # convert expiration timestamp to datetime
+    expiry_datetime = datetime.utcfromtimestamp(expire_time/1000)
+    # Get delta
+    contract_delta = client.fetch_greeks(longest_expiry_contract["symbol"])
+    delta = contract_delta["info"]["greeks"]["delta"]
+
+    # Get contract size
+    # Calculate share to purchase
+    contract_size = longest_expiry_contract["info"]["contract_size"]
+    share_to_purchase = float(delta) * float(contract_size)
+
+
+    return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
 def get_access_token(client_id, client_secret):
     url = f'{base_url}public/auth'
     params = {
@@ -55,12 +119,70 @@ def fetch_account_info(access_token):
         raise Exception('Failed to fetch account information: ' + response_data.get('error', {}).get('message', 'Unknown error'))
     
 client = ccxt.deribit({
-    'clientId': client_id,
-    'clientSecret': client_secret,
+    'apiKey': client_id,
+    'secret': client_secret,
     'timeout': 50000,
 })
+if mode=="test":
+    client.set_sandbox_mode(True)
+
+#Function 
+def create_option_order(client):
+    try:
+        # Construct the order
+        symbol=information_for_options(client)[-3]
+        order = client.create_market_buy_order(symbol,1)
+
+        print(f"Order created successfully: {order}")
+        return order
+
+    except Exception as e:
+        print(f"Failed to create order: {e}")
+        return None
 
 
+def create_hedging_order(symbol, side,share_to_purchase):
+
+    # Connect to Binance testnet
+    api_key = 'ZQatsB1ChLN5LDHH2fMr7rj9lgiYBLs5NlF1HgagdyepcoOAYnV3kDsVXGkXKrgb'
+    api_secret = 'aM9Jzg7gp6LKiKxzXB7H7F0IPj72D33KiDZr8Own4ByvRRTqUTzVeXbfmDIcFx9b'
+    client = Client(api_key, api_secret, testnet=True)
+    # Get current price of the symbol
+    ticker = client.get_symbol_ticker(symbol=symbol)
+    current_price = float(ticker['price'])
+    print(f"Current price of {symbol}: {current_price}")
+    print(f"Share to purchase: {share_to_purchase} ")
+    # Create a market order
+    try:
+        order = client.create_order(
+            symbol=symbol,
+            side=side,
+            type='MARKET',
+            quantity=float (share_to_purchase)
+        )
+        print("Order placed successfully.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        order = None
+    
+    return order
+
+def calculate_and_place_order(symbol,old_delta):
+    old_delta=float(old_delta)
+    new_delta=float(information_for_options(client)[-2])
+    contract_size=float(information_for_options(client)[-1])
+    share_to_purchase = (new_delta - old_delta) * contract_size
+    if share_to_purchase != 0:  # Only place an order if there's a change in delta
+        if new_delta > old_delta:
+            side = "BUY"
+        else:
+            side = "SELL"
+        create_hedging_order(symbol,side, abs(share_to_purchase))
+    else:
+        print(f"{datetime.now()}: No change in delta. No order placed.")
+
+
+    
 # def hedging_with_spot(symbol = share_to_purchase, type = order_type, side = side, amount = share_to_purchase, price = price):
     # def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}):
 
@@ -72,10 +194,26 @@ if __name__ == "__main__":
     
 #     # Dp + Dc != 0
     # Information for options
-    # expiry_datetime, share_to_purchase, symbol = information_for_options(client)
-    access_token = get_access_token(client_id, client_secret)
-    account_info = fetch_account_info(access_token)
-    print(account_info)
+    expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
+    print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
+    symbol=symbol.split("-")[0]
+    symbol=symbol+"USDT"
+    symbol
+    print(f"Converting to Binance symbol: {symbol}")
+    old_delta=0
+    def job():
+        global old_delta
+        print("Performing delta look up")
+        calculate_and_place_order(symbol,old_delta)
+        old_delta=information_for_options(client)[-2]
+        print(f"Updated old_delta to: {old_delta}")
+    # Schedule the job every hour
+    schedule.every(10).seconds.do(job)
+
+    # Run the scheduler
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
     # Buy option
     # account = client.fetch_balance()
