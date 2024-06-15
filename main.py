@@ -7,8 +7,10 @@ from binance.exceptions import BinanceAPIException
 from datetime import datetime, timedelta
 import time
 import schedule
-
+import hmac
+import hashlib
 import requests
+import json 
 
 
 mode = "test"
@@ -127,13 +129,74 @@ if mode=="test":
     client.set_sandbox_mode(True)
 
 #Function 
+def create_signature(query_string, secret_key):
+    return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+
+# Function to get all open orders from Binance Spot Testnet
+def get_all_open_orders():
+    api_key = 'dIgzgeXGUjuNi81pWAZAzHt1zkYcfoN4QM0oasQsVkJQmoqdkC7dilNLiETRheyU'
+    api_secret = 'ZxiMdpOSzIirGkhnkEBJsNHZ92okUqBwSulFIKKeHSLbLdlPkjWN9lMx5lsJn79g'
+    base_url = 'https://testnet.binance.vision'
+    endpoint = '/api/v3/openOrders'
+    timestamp = int(time.time() * 1000)
+    query_string = f'timestamp={timestamp}'
+
+    # Creating a signature
+    signature = create_signature(query_string, api_secret)
+    query_string += f'&signature={signature}'
+
+    # Header with API key
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+
+    # Sending the GET request
+    url = f'{base_url}{endpoint}?{query_string}'
+    response = requests.get(url, headers=headers)
+
+    # Handling the response
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f'Error: {response.status_code}, Message: {response.text}')
+def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
+    """Retrieve all past orders for a given symbol on Binance Spot Testnet."""
+    base_url = 'https://testnet.binance.vision'
+    endpoint = '/api/v3/allOrders'
+    timestamp = int(time.time() * 1000)
+    api_key = 'dIgzgeXGUjuNi81pWAZAzHt1zkYcfoN4QM0oasQsVkJQmoqdkC7dilNLiETRheyU'
+    api_secret = 'ZxiMdpOSzIirGkhnkEBJsNHZ92okUqBwSulFIKKeHSLbLdlPkjWN9lMx5lsJn79g'    
+    # Create query string
+    query_string = f'symbol={symbol}&timestamp={timestamp}&limit={limit}'
+    if start_time:
+        query_string += f'&startTime={start_time}'
+    if end_time:
+        query_string += f'&endTime={end_time}'
+
+    # Create signature
+    signature = create_signature(query_string, api_secret)
+    query_string += f'&signature={signature}'
+
+    # Headers
+    headers = {'X-MBX-APIKEY': api_key}
+
+    # Send GET request
+    url = f'{base_url}{endpoint}?{query_string}'
+    response = requests.get(url, headers=headers)
+
+    # Handle the response
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f'Error: {response.status_code}, Message: {response.text}')
+
 def create_option_order(client):
     try:
         # Construct the order
         symbol=information_for_options(client)[-3]
         order = client.create_market_buy_order(symbol,1)
 
-        print(f"Order created successfully: {order}")
+        print(f"Order created successfully on Deribit: {order}")
         return order
 
     except Exception as e:
@@ -163,21 +226,38 @@ def create_hedging_order(symbol, side,share_to_purchase):
         print("Order placed successfully.")
     except Exception as e:
         print(f"An error occurred: {e}")
+      
+        #print(client.get_symbol_info(symbol))        
         order = None
     
     return order
 
+def get_min_contract_size(symbol):
+    url = "https://api.binance.com/api/v3/exchangeInfo"
+    response = requests.get(url)
+    data = response.json()
+
+    for s in data['symbols']:
+        if s['symbol'] == symbol:
+            for filter in s['filters']:
+                if filter['filterType'] == 'LOT_SIZE':
+                    min_qty = filter['minQty']
+                    return float(min_qty)
+                
 def calculate_and_place_order(symbol,old_delta):
     old_delta=float(old_delta)
     new_delta=float(information_for_options(client)[-2])
     contract_size=float(information_for_options(client)[-1])
     share_to_purchase = (new_delta - old_delta) * contract_size
     if share_to_purchase != 0:  # Only place an order if there's a change in delta
-        if new_delta > old_delta:
-            side = "BUY"
+        if share_to_purchase < get_min_contract_size(symbol):
+            print(f"Share to purchase too small: {share_to_purchase}")
         else:
-            side = "SELL"
-        create_hedging_order(symbol,side, abs(share_to_purchase))
+            if new_delta > old_delta:
+                side = "BUY"
+            else:
+                side = "SELL"
+            create_hedging_order(symbol,side, abs(share_to_purchase))
     else:
         print(f"{datetime.now()}: No change in delta. No order placed.")
 
@@ -194,19 +274,29 @@ if __name__ == "__main__":
     
 #     # Dp + Dc != 0
     # Information for options
+    
+
     expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
-    print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
+    #print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
     symbol=symbol.split("-")[0]
     symbol=symbol+"USDT"
     symbol
-    print(f"Converting to Binance symbol: {symbol}")
-    old_delta=0
+
+    #print(f"Converting to Binance symbol: {symbol}")
+    with open("old_delta.json", 'r') as file:
+
+        data = json.load(file)
+    old_delta = data
+    
     def job():
         global old_delta
         print("Performing delta look up")
+        print(f"Calculating {symbol}'s delta")
         calculate_and_place_order(symbol,old_delta)
         old_delta=information_for_options(client)[-2]
         print(f"Updated old_delta to: {old_delta}")
+        with open("old_delta.json", "w") as json_file:
+            json.dump(old_delta, json_file)
     # Schedule the job every hour
     schedule.every(10).seconds.do(job)
 
