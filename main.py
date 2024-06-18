@@ -12,28 +12,35 @@ import hashlib
 import requests
 import json 
 
+#Function to set up Deribit client
+def deribit_set_up(mode):
+    print(f"We are in: {mode} mode")
+    client_id_testnet = "m_cYdGRs"
+    client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
 
-mode = "test"
-print(f"We are in: {mode} mode")
-client_id_testnet = "m_cYdGRs"
-client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
+    client_id_realnet = "VUSrWKNX"
+    client_secret_realnet = "CNIEmjiKy2p-h28O4Mda1QKD8hXJ3duA5rAODdLfvwE"
 
-client_id_realnet = "VUSrWKNX"
-client_secret_realnet = "CNIEmjiKy2p-h28O4Mda1QKD8hXJ3duA5rAODdLfvwE"
+    if mode == "test":
+        client_id = client_id_testnet
+        client_secret = client_secret_testnet
+        base_url = 'https://test.deribit.com/api/v2/' # test base url
+    else:
+        client_id = client_id_realnet
+        client_secret = client_secret_realnet
+        base_url = 'https://www.deribit.com/api/v2/'
 
-if mode == "test":
-    client_id = client_id_testnet
-    client_secret = client_secret_testnet
-    base_url = 'https://test.deribit.com/api/v2/' # test base url
-else:
-    client_id = client_id_realnet
-    client_secret = client_secret_realnet
-    base_url = 'https://www.deribit.com/api/v2/'
+    print(f"The base url: {base_url} ")
 
-print(f"The base url: {base_url} ")
-
-
-# Function to get access token
+    client = ccxt.deribit({
+        'apiKey': client_id,
+        'secret': client_secret,
+        'timeout': 50000,
+    })
+    if mode=="test":
+        client.set_sandbox_mode(True)
+    return client
+#Function to retrieve info
 def information_for_options(client):
     markets = client.fetch_markets()
     server_time = client.fetch_time()
@@ -90,6 +97,7 @@ def information_for_options(client):
 
 
     return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
+# Function to get access token
 def get_access_token(client_id, client_secret):
     url = f'{base_url}public/auth'
     params = {
@@ -103,7 +111,6 @@ def get_access_token(client_id, client_secret):
         return response_data['result']['access_token']
     else:
         raise Exception('Failed to get access token: ' + response_data.get('error', {}).get('message', 'Unknown error'))
-
 # Function to fetch account information
 def fetch_account_info(access_token):
     url = f'{base_url}private/get_account_summary'
@@ -118,24 +125,99 @@ def fetch_account_info(access_token):
     if 'result' in response_data:
         return response_data['result']
     else:
-        raise Exception('Failed to fetch account information: ' + response_data.get('error', {}).get('message', 'Unknown error'))
-    
-client = ccxt.deribit({
-    'apiKey': client_id,
-    'secret': client_secret,
-    'timeout': 50000,
-})
-if mode=="test":
-    client.set_sandbox_mode(True)
+        raise Exception('Failed to fetch account information: ' + response_data.get('error', {}).get('message', 'Unknown error'))    
+#Function to get account balance
+def get_account_balances(symbol=None):
+    api_key,api_secret=get_keys("binance_keys.json")
+    client = Client(api_key, api_secret, testnet=True)
+    time_offset=get_time_off_set("time.json")
+    if time_offset:
+        client.timestamp_offset = time_offset
+    try:
+        # Fetch account information
+        account_info = client.get_account()
 
-#Function 
+        # Extract balances
+        balances = account_info['balances']
+        balance_info = []
+
+        # Iterate through each balance and append non-zero balances to the list
+        if symbol==None:
+            for balance in balances:
+                asset = balance['asset']
+                free_balance = float(balance['free'])
+                locked_balance = float(balance['locked'])
+                total_balance = free_balance + locked_balance
+
+                if total_balance > 0:
+                    balance_info.append({
+                        'Asset': asset,
+                        'Free': free_balance,
+                        'Locked': locked_balance,
+                        'Total': total_balance
+                    })
+        else: 
+            for balance in balances:
+                if balance['asset'] in symbol:
+                    asset = balance['asset']
+                    free_balance = float(balance['free'])
+                    locked_balance = float(balance['locked'])
+                    total_balance = free_balance + locked_balance
+
+                    if total_balance > 0:
+                        balance_info.append({
+                            'Asset': asset,
+                            'Free': free_balance,
+                            'Locked': locked_balance,
+                            'Total': total_balance
+                        })
+
+        return balance_info
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
+#Function for Displaying account balance
+def display_balances(balances):
+    if not balances:
+        print("No balances found or an error occurred.")
+        return
+
+    print(f"{'Asset':<10} {'Free Balance':<15} {'Locked Balance':<15} {'Total Balance':<15}")
+    print("="*55)
+    for balance in balances:
+        print(f"{balance['Asset']:<10} {balance['Free']:<15} {balance['Locked']:<15} {balance['Total']:<15}")
+#Function to create signature for certain querry
 def create_signature(query_string, secret_key):
     return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
-
+#Function for key extract
+def get_keys(filepath):
+    with open(filepath) as config_file:
+        config = json.load(config_file)
+        api_key = config['api_key']
+        api_secret=config['api_secret']
+    return api_key,api_secret
+#Function to sync time (generate an offset)
+def synchronize_time():
+    api_key,api_secret=get_keys("binance_keys.json")
+    client = Client(api_key, api_secret, testnet=True)
+    try:
+        server_time = client.get_server_time()
+        server_timestamp = server_time['serverTime']
+        local_timestamp = int(time.time() * 1000)
+        time_offset = server_timestamp - local_timestamp
+        with open("time.json","w") as config_file:
+            json.dump(time_offset,config_file)
+    except Exception as e:
+        print(f"An error occurred during time synchronization: {e}")
+#Function to get time_offset
+def get_time_off_set(filepath):
+    with open(filepath) as config_file:
+        time_offset=json.load(config_file)
+    return time_offset
 # Function to get all open orders from Binance Spot Testnet
 def get_all_open_orders():
-    api_key = 'dIgzgeXGUjuNi81pWAZAzHt1zkYcfoN4QM0oasQsVkJQmoqdkC7dilNLiETRheyU'
-    api_secret = 'ZxiMdpOSzIirGkhnkEBJsNHZ92okUqBwSulFIKKeHSLbLdlPkjWN9lMx5lsJn79g'
+    api_key,api_secret=get_keys("binance_keys.json")
     base_url = 'https://testnet.binance.vision'
     endpoint = '/api/v3/openOrders'
     timestamp = int(time.time() * 1000)
@@ -159,13 +241,13 @@ def get_all_open_orders():
         return response.json()
     else:
         raise Exception(f'Error: {response.status_code}, Message: {response.text}')
+#Function for retrieving all past orders
 def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
     """Retrieve all past orders for a given symbol on Binance Spot Testnet."""
     base_url = 'https://testnet.binance.vision'
     endpoint = '/api/v3/allOrders'
     timestamp = int(time.time() * 1000)
-    api_key = 'dIgzgeXGUjuNi81pWAZAzHt1zkYcfoN4QM0oasQsVkJQmoqdkC7dilNLiETRheyU'
-    api_secret = 'ZxiMdpOSzIirGkhnkEBJsNHZ92okUqBwSulFIKKeHSLbLdlPkjWN9lMx5lsJn79g'    
+    api_key,api_secret=get_keys("binance_keys.json")    
     # Create query string
     query_string = f'symbol={symbol}&timestamp={timestamp}&limit={limit}'
     if start_time:
@@ -189,7 +271,7 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
         return response.json()
     else:
         raise Exception(f'Error: {response.status_code}, Message: {response.text}')
-
+#Function to create an option order
 def create_option_order(client):
     try:
         # Construct the order
@@ -202,13 +284,11 @@ def create_option_order(client):
     except Exception as e:
         print(f"Failed to create order: {e}")
         return None
-
-
+#Function for creating a hedging order 
 def create_hedging_order(symbol, side,share_to_purchase):
 
     # Connect to Binance testnet
-    api_key = 'ZQatsB1ChLN5LDHH2fMr7rj9lgiYBLs5NlF1HgagdyepcoOAYnV3kDsVXGkXKrgb'
-    api_secret = 'aM9Jzg7gp6LKiKxzXB7H7F0IPj72D33KiDZr8Own4ByvRRTqUTzVeXbfmDIcFx9b'
+    api_key,api_secret=get_keys("binance_keys.json")
     client = Client(api_key, api_secret, testnet=True)
     # Get current price of the symbol
     ticker = client.get_symbol_ticker(symbol=symbol)
@@ -231,7 +311,7 @@ def create_hedging_order(symbol, side,share_to_purchase):
         order = None
     
     return order
-
+#Function to get the min contract amount
 def get_min_contract_size(symbol):
     url = "https://api.binance.com/api/v3/exchangeInfo"
     response = requests.get(url)
@@ -243,7 +323,7 @@ def get_min_contract_size(symbol):
                 if filter['filterType'] == 'LOT_SIZE':
                     min_qty = filter['minQty']
                     return float(min_qty)
-                
+#Function to calculate and place order
 def calculate_and_place_order(symbol,old_delta):
     old_delta=float(old_delta)
     new_delta=float(information_for_options(client)[-2])
@@ -263,8 +343,7 @@ def calculate_and_place_order(symbol,old_delta):
 
 
     
-# def hedging_with_spot(symbol = share_to_purchase, type = order_type, side = side, amount = share_to_purchase, price = price):
-    # def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}):
+
 
 
 
@@ -274,8 +353,9 @@ if __name__ == "__main__":
     
 #     # Dp + Dc != 0
     # Information for options
-    
-
+    balances = get_account_balances()
+    display_balances(balances)
+    client=deribit_set_up("test")
     expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
     #print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
     symbol=symbol.split("-")[0]
