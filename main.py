@@ -5,6 +5,7 @@ import ccxt
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 from datetime import datetime, timedelta
+import logging
 import time
 import schedule
 import hmac
@@ -14,7 +15,7 @@ import json
 
 #Function to set up Deribit client
 def deribit_set_up(mode):
-    print(f"We are in: {mode} mode")
+    logging.info(f"We are in: {mode} mode")
     client_id_testnet = "m_cYdGRs"
     client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
 
@@ -30,7 +31,7 @@ def deribit_set_up(mode):
         client_secret = client_secret_realnet
         base_url = 'https://www.deribit.com/api/v2/'
 
-    print(f"The base url: {base_url} ")
+    logging.info(f"The base url: {base_url}")
 
     client = ccxt.deribit({
         'apiKey': client_id,
@@ -42,61 +43,65 @@ def deribit_set_up(mode):
     return client
 #Function to retrieve info
 def information_for_options(client):
-    markets = client.fetch_markets()
-    server_time = client.fetch_time()
-    # Filter option markets
-    option_markets = [market for market in markets if market['type'] == 'option']
-    # print("Option markets:", option_markets)
-    for i in option_markets:
-        # print(i["info"])
-        filtered_list = []
-        expiry_timestamp = float(i['info']['expiration_timestamp'])/1000
-        # Convert expiry timestamp to datetime
-        expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
+    try:
+        markets = client.fetch_markets()
+        server_time = client.fetch_time()
+        # Filter option markets
+        option_markets = [market for market in markets if market['type'] == 'option']
+        # print("Option markets:", option_markets)
+        for i in option_markets:
+            # print(i["info"])
+            filtered_list = []
+            expiry_timestamp = float(i['info']['expiration_timestamp'])/1000
+            # Convert expiry timestamp to datetime
+            expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
 
-        # Calculate current datetime plus 20 weeks
-        current_datetime = datetime.utcnow()
-        twenty_weeks_later = current_datetime + timedelta(weeks=20)
-        # Check if expiry datetime is greater than 20 weeks later
-        if expiry_datetime <= twenty_weeks_later:
-            filtered_list.append(i)
-            # if call option and strike is not none, add to list
-            second_filtered_list = []
-            for item in filtered_list:
-                # if item["strike"] is not None and 
-                if item["optionType"] == "call" and item["strike"] is not None:
+            # Calculate current datetime plus 20 weeks
+            current_datetime = datetime.utcnow()
+            twenty_weeks_later = current_datetime + timedelta(weeks=20)
+            # Check if expiry datetime is greater than 20 weeks later
+            if expiry_datetime <= twenty_weeks_later:
+                filtered_list.append(i)
+                # if call option and strike is not none, add to list
+                second_filtered_list = []
+                for item in filtered_list:
+                    # if item["strike"] is not None and 
+                    if item["optionType"] == "call" and item["strike"] is not None:
 
-                    second_filtered_list.append(item)
-                    # third_filtered_list = []
-                    # # Loop through second filtered list and get contract with longest expiration
-                    # for item in second_filtered_list:
-                    #     expired_time = item["expiration_timestamp"]
-                        
-    #                     if item["expiration_timestamp"] is not None:
-    #                         third_filtered_list.append(item)
-            third_filtered_list = []
-            expiry_timestamp_list = []
-            if len(second_filtered_list) > 0:
-                longest_expiry_contract = max(second_filtered_list, key=lambda x: x['expiry'])
+                        second_filtered_list.append(item)
+                        # third_filtered_list = []
+                        # # Loop through second filtered list and get contract with longest expiration
+                        # for item in second_filtered_list:
+                        #     expired_time = item["expiration_timestamp"]
+                            
+        #                     if item["expiration_timestamp"] is not None:
+        #                         third_filtered_list.append(item)
+                third_filtered_list = []
+                expiry_timestamp_list = []
+                if len(second_filtered_list) > 0:
+                    longest_expiry_contract = max(second_filtered_list, key=lambda x: x['expiry'])
 
-    # print(longest_expiry_contract)
-    # Contract symbol
-    symbol = longest_expiry_contract["id"]
-    # Timestamp of contract            
-    expire_time = float(longest_expiry_contract["info"]["expiration_timestamp"])
-    # convert expiration timestamp to datetime
-    expiry_datetime = datetime.utcfromtimestamp(expire_time/1000)
-    # Get delta
-    contract_delta = client.fetch_greeks(longest_expiry_contract["symbol"])
-    delta = contract_delta["info"]["greeks"]["delta"]
+        # print(longest_expiry_contract)
+        # Contract symbol
+        symbol = longest_expiry_contract["id"]
+        # Timestamp of contract            
+        expire_time = float(longest_expiry_contract["info"]["expiration_timestamp"])
+        # convert expiration timestamp to datetime
+        expiry_datetime = datetime.utcfromtimestamp(expire_time/1000)
+        # Get delta
+        contract_delta = client.fetch_greeks(longest_expiry_contract["symbol"])
+        delta = contract_delta["info"]["greeks"]["delta"]
 
-    # Get contract size
-    # Calculate share to purchase
-    contract_size = longest_expiry_contract["info"]["contract_size"]
-    share_to_purchase = float(delta) * float(contract_size)
+        # Get contract size
+        # Calculate share to purchase
+        contract_size = longest_expiry_contract["info"]["contract_size"]
+        share_to_purchase = float(delta) * float(contract_size)
 
 
-    return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
+        return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
+    except Exception as e:
+        logging.error(f"Failed to retrieve options information: {e}")
+        return None, None, None, None, None
 # Function to get access token
 def get_access_token(client_id, client_secret):
     url = f'{base_url}public/auth'
@@ -293,8 +298,8 @@ def create_hedging_order(symbol, side,share_to_purchase):
     # Get current price of the symbol
     ticker = client.get_symbol_ticker(symbol=symbol)
     current_price = float(ticker['price'])
-    print(f"Current price of {symbol}: {current_price}")
-    print(f"Share to purchase: {share_to_purchase} ")
+    logging.info(f"Current price of {symbol}: {current_price}")
+    logging.info(f"Share to purchase: {share_to_purchase}")
     # Create a market order
     try:
         order = client.create_order(
@@ -325,33 +330,37 @@ def get_min_contract_size(symbol):
                     return float(min_qty)
 #Function to calculate and place order
 def calculate_and_place_order(symbol,old_delta):
-    old_delta=float(old_delta)
-    new_delta=float(information_for_options(client)[-2])
-    contract_size=float(information_for_options(client)[-1])
-    share_to_purchase = (new_delta - old_delta) * contract_size
-    if share_to_purchase != 0:  # Only place an order if there's a change in delta
-        if share_to_purchase < get_min_contract_size(symbol):
-            print(f"Share to purchase too small: {share_to_purchase}")
-        else:
-            if new_delta > old_delta:
-                side = "BUY"
+    try: 
+        old_delta=float(old_delta)
+        new_delta=float(information_for_options(client)[-2])
+        contract_size=float(information_for_options(client)[-1])
+        share_to_purchase = (new_delta - old_delta) * contract_size
+        if share_to_purchase != 0:  # Only place an order if there's a change in delta
+            if share_to_purchase < get_min_contract_size(symbol):
+                logging.warning(f"Share to purchase too small: {share_to_purchase}")
             else:
-                side = "SELL"
-            create_hedging_order(symbol,side, abs(share_to_purchase))
-    else:
-        print(f"{datetime.now()}: No change in delta. No order placed.")
+                if new_delta > old_delta:
+                    side = "BUY"
+                else:
+                    side = "SELL"
+                create_hedging_order(symbol,side, abs(share_to_purchase))
+        else:
+            logging.info(f"{datetime.now()}: No change in delta. No order placed.")
+    except Exception as e:
+        logging.error(f"Error calculating and placing order: {e}") 
 
 def update_time_index_balance_sheet(json_file_path):
-    with open(json_file_path, 'r') as json_file:
-        nested_bal_dict = json.load(json_file)
-    balances=get_account_balances()
-    current_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    nested_bal_dict[current_timestamp]=balances
-    print(len(nested_bal_dict))
-    with open(json_file_path, 'w') as json_file:
-        json.dump(nested_bal_dict, json_file, indent=4)
-    
-
+    try: 
+        with open(json_file_path, 'r') as json_file:
+            nested_bal_dict = json.load(json_file)
+        balances=get_account_balances()
+        current_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        nested_bal_dict[current_timestamp]=balances
+        print(len(nested_bal_dict))
+        with open(json_file_path, 'w') as json_file:
+            json.dump(nested_bal_dict, json_file, indent=4)
+    except Exception as e:
+        logging.error(f"Failed to update balance sheet: {e}")
 
 
 
@@ -379,15 +388,15 @@ if __name__ == "__main__":
     def job():
         global old_delta
         update_time_index_balance_sheet(json_file_path)
-        print("Performing delta look up")
+        logging.info("Performing delta look up")
         print(f"Calculating {symbol}'s delta")
         calculate_and_place_order(symbol,old_delta)
         old_delta=information_for_options(client)[-2]
-        print(f"Updated old_delta to: {old_delta}")
+        logging.info(f"Updated old_delta to: {old_delta}")
         with open("old_delta.json", "w") as json_file:
             json.dump(old_delta, json_file)
     # Schedule the job every hour
-    schedule.every(20).seconds.do(job)
+    schedule.every(3600).seconds.do(job)
 
     # Run the scheduler
     while True:
