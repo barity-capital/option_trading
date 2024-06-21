@@ -12,6 +12,71 @@ import hmac
 import hashlib
 import requests
 import json 
+import atexit
+from logging.handlers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler
+
+# Configure rotating file handler
+handler = RotatingFileHandler('app.log', maxBytes=5*1024*1024, backupCount=5)  # 5 MB per file, keep 5 backups
+logging.basicConfig(handlers=[handler], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# Configure rotating file handler
+
+
+
+def return_balance_sheet_change(filepath,destinationpath):
+    with open(filepath) as config_file:
+        nested_bal=json.load(config_file)
+    first_key=list(nested_bal.keys())[0]
+    last_key=list(nested_bal.keys())[-1]
+    first_bal=nested_bal[first_key]
+    last_bal=nested_bal[last_key]
+    net_bal=subtract_balance_sheets(first_bal,last_bal)
+    with open(destinationpath, 'w') as file:
+        json.dump(net_bal, file)
+    return net_bal
+
+def list_to_dict(asset_list):
+    """Convert a list of asset dictionaries to a dictionary with asset names as keys."""
+    return {item['Asset']: item for item in asset_list}
+
+def subtract_balance_sheets(sheet1, sheet2):
+    """Subtract the balances of two balance sheets."""
+    sheet1_dict = list_to_dict(sheet1)
+    sheet2_dict = list_to_dict(sheet2)
+    
+    result_dict = {}
+    
+    all_assets = set(sheet1_dict.keys()).union(set(sheet2_dict.keys()))
+    
+    for asset in all_assets:
+
+        free1 = sheet1_dict.get(asset, {'Free': 0.0})['Free']
+        locked1 = sheet1_dict.get(asset, {'Locked': 0.0})['Locked']
+        total1 = sheet1_dict.get(asset, {'Total': 0.0})['Total']
+        
+        free2 = sheet2_dict.get(asset, {'Free': 0.0})['Free']
+        locked2 = sheet2_dict.get(asset, {'Locked': 0.0})['Locked']
+        total2 = sheet2_dict.get(asset, {'Total': 0.0})['Total']
+        if ((total1 -total2)!=0):
+            result_dict[asset] = {
+                'Asset': asset,
+                'Free': free1 - free2,
+                'Locked': locked1 - locked2,
+                'Total': total1 - total2
+            }
+    
+    return list(result_dict.values())
+
+def clear_json_file(file_path):
+    with open(file_path, 'w') as file:
+        json.dump({}, file)  # Clears the file by writing an empty dictionary
+#FINAL EXIT COMMAND
+def final_command():
+    print("Executing final command...")
+    return_balance_sheet_change("nested_dataframes.json","net_bal_change.json")
+    clear_json_file("nested_dataframes.json")
+
+atexit.register(final_command)
 
 #Function to set up Deribit client
 def deribit_set_up(mode):
@@ -197,14 +262,14 @@ def create_signature(query_string, secret_key):
     return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
 #Function for key extract
 def get_keys(filepath):
-    with open(filepath) as config_file:
-        config = json.load(config_file)
+    with open(filepath) as key_file:
+        config = json.load(key_file)
         api_key = config['api_key']
         api_secret=config['api_secret']
     return api_key,api_secret
 #Function to sync time (generate an offset)
 def synchronize_time():
-    api_key,api_secret=get_keys("../binance_keys.json")
+    api_key,api_secret=get_keys("binance_keys.json")
     client = Client(api_key, api_secret, testnet=True)
     try:
         server_time = client.get_server_time()
@@ -370,6 +435,7 @@ if __name__ == "__main__":
     
 #     # Dp + Dc != 0
     # Information for options
+    clear_json_file("net_bal_change.json")
     json_file_path = 'nested_dataframes.json'
     #display_balances(balances)
     client=deribit_set_up("test")
@@ -386,6 +452,7 @@ if __name__ == "__main__":
     old_delta = data
     
     def job():
+        synchronize_time()
         global old_delta
         update_time_index_balance_sheet(json_file_path)
         logging.info("Performing delta look up")
@@ -396,7 +463,7 @@ if __name__ == "__main__":
         with open("old_delta.json", "w") as json_file:
             json.dump(old_delta, json_file)
     # Schedule the job every hour
-    schedule.every(3600).seconds.do(job)
+    schedule.every(10).seconds.do(job)
 
     # Run the scheduler
     while True:
