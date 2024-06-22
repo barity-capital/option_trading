@@ -14,26 +14,55 @@ import requests
 import json 
 import atexit
 from logging.handlers import RotatingFileHandler
-from logging.handlers import RotatingFileHandler
+import re
+
 
 # Configure rotating file handler
 handler = RotatingFileHandler('app.log', maxBytes=5*1024*1024, backupCount=5)  # 5 MB per file, keep 5 backups
 logging.basicConfig(handlers=[handler], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 # Configure rotating file handler
 
+def sanitize_filename(filename):
+    # Replace invalid characters with underscores
+    return re.sub(r'[<>:"/\\|?*]', '_', filename)
 
 
-def return_balance_sheet_change(filepath,destinationpath):
-    with open(filepath) as config_file:
-        nested_bal=json.load(config_file)
-    first_key=list(nested_bal.keys())[0]
-    last_key=list(nested_bal.keys())[-1]
-    first_bal=nested_bal[first_key]
-    last_bal=nested_bal[last_key]
-    net_bal=subtract_balance_sheets(first_bal,last_bal)
-    with open(destinationpath, 'w') as file:
-        json.dump(net_bal, file)
-    return net_bal
+def return_balance_sheet_change(filepath, destinationpath):
+    try:
+        with open(filepath, 'r') as config_file:
+            nested_bal = json.load(config_file)
+    except FileNotFoundError:
+        print(f"Error: The file {filepath} does not exist.")
+        return
+    except json.JSONDecodeError:
+        print(f"Error: The file {filepath} is not valid JSON.")
+        return
+
+    keys = list(nested_bal.keys())
+    if not keys:
+        print("Error: The JSON file is empty.")
+        return
+
+    first_key = keys[0]
+    last_key = keys[-1]
+    first_balance_sheet = nested_bal[first_key]
+    last_balance_sheet = nested_bal[last_key]
+
+    net_balance_change = subtract_balance_sheets(first_balance_sheet, last_balance_sheet)
+
+    raw_filename = f"{first_key} to {last_key}_net_bal_change.json"
+    sanitized_filename = sanitize_filename(raw_filename)
+    destination_filename = sanitized_filename
+    
+    try:
+        with open(destination_filename, 'w') as file:
+            json.dump(net_balance_change, file, indent=4)
+    except IOError as e:
+        print(f"Error: Unable to write to file {destination_filename}. {e}")
+        return
+
+    print(f"Net balance change has been written to {destination_filename}")
+    return net_balance_change
 
 def list_to_dict(asset_list):
     """Convert a list of asset dictionaries to a dictionary with asset names as keys."""
