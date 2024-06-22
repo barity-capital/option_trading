@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "Asset": "ETH",
+        "Free": 0.0,
+        "Locked": 0.0,
+        "Total": 1998.0
+    },
+    {
+        "Asset": "BTC",
+        "Free": 0.0,
+        "Locked": 0.0,
+        "Total": 99.0
+    }
+]

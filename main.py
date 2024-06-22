@@ -457,6 +457,45 @@ def update_time_index_balance_sheet(json_file_path):
         logging.error(f"Failed to update balance sheet: {e}")
 
 
+#info_after trade
+def calculate_roi_from_balance_sheets(filepath):
+    """
+    Calculate ROI from a nested dict of balances sheet
+
+    Default is doing the first and last. 
+
+    Returns:
+    - ROI: The Return on Investment as a percentage.
+    """
+    with open(filepath) as config_file:
+        nested_bal=json.load(config_file)
+    first_key=list(nested_bal.keys())[0]
+    last_key=list(nested_bal.keys())[-1]
+    first_bal=nested_bal[first_key]
+    last_bal=nested_bal[last_key]
+
+    def list_to_dict(asset_list):
+        """Convert a list of asset dictionaries to a dictionary with asset names as keys."""
+        return {item['Asset']: item for item in asset_list if 'Asset' in item}
+    
+    # Convert initial and final balance sheets to dictionaries
+    initial_dict = list_to_dict(first_bal)
+    final_dict = list_to_dict(last_bal)
+    
+    # Calculate total initial and final values
+    initial_total = sum(item['Total'] for item in initial_dict.values())
+    final_total = sum(item['Total'] for item in final_dict.values())
+    
+    # Compute the net gain or loss
+    net_gain = final_total - initial_total
+    
+    if initial_total == 0:
+        raise ValueError("Initial total value must be greater than zero.")
+    
+    # Calculate ROI
+    roi = (net_gain / initial_total) * 100
+    
+    return roi
 
 if __name__ == "__main__":
     

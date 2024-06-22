@@ -4,13 +4,13 @@
             "Asset": "ETH",
             "Free": 2.94,
             "Locked": 0.0,
-            "Total": 2.94
+            "Total": 2000.94
         },
         {
             "Asset": "BTC",
             "Free": 1.02604,
             "Locked": 0.0,
-            "Total": 1.02604
+            "Total": 100.02604
         },
         {
             "Asset": "LTC",
