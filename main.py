@@ -103,7 +103,9 @@ def clear_json_file(file_path):
 def final_command():
     print("Executing final command...")
     return_balance_sheet_change("nested_dataframes.json","net_bal_change.json")
+    save_roi_to_json(calculate_roi_from_balance_sheets("nested_dataframes.json"),"roi.json")
     clear_json_file("nested_dataframes.json")
+    
 
 atexit.register(final_command)
 
@@ -495,7 +497,22 @@ def calculate_roi_from_balance_sheets(filepath):
     # Calculate ROI
     roi = (net_gain / initial_total) * 100
     
-    return roi
+    return {
+        "timestamp": datetime.now().isoformat(),
+        "ROI": roi
+    }
+
+def save_roi_to_json(roi_data, output_filepath):
+    """
+    Saves the ROI data along with a timestamp to a JSON file.
+    
+    Parameters:
+    - roi_data (dict): The ROI data containing the ROI value and the timestamp.
+    - output_filepath (str): The file path where the JSON file will be saved.
+    """
+    with open(output_filepath, 'w') as file:
+        json.dump(roi_data, file, indent=4)
+
 
 if __name__ == "__main__":
     
