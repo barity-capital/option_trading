@@ -405,6 +405,10 @@ def create_hedging_order(symbol, side,share_to_purchase):
             quantity=float (share_to_purchase)
         )
         print("Order placed successfully.")
+        output_file="order.json"
+        with open(output_file, 'w') as file:
+            json.dump(order, file, indent=4)
+        logging.info(f"Order details saved to {output_file}")
     except Exception as e:
         print(f"An error occurred: {e}")
       
