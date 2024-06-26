@@ -21,6 +21,9 @@ import re
 handler = RotatingFileHandler('app.log', maxBytes=5*1024*1024, backupCount=5)  # 5 MB per file, keep 5 backups
 logging.basicConfig(handlers=[handler], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 # Configure rotating file handler
+current_time = datetime.now()
+print(current_time.strftime('%Y-%m-%d %H:%M:%S'))
+
 
 def sanitize_filename(filename):
     # Replace invalid characters with underscores
@@ -443,7 +446,7 @@ def calculate_and_place_order(symbol,old_delta):
                     side = "BUY"
                 else:
                     side = "SELL"
-                create_hedging_order(symbol,side, abs(share_to_purchase))
+                create_hedging_order(symbol,side, round(abs(share_to_purchase),4))
         else:
             logging.info(f"{datetime.now()}: No change in delta. No order placed.")
     except Exception as e:
@@ -552,7 +555,7 @@ if __name__ == "__main__":
         with open("old_delta.json", "w") as json_file:
             json.dump(old_delta, json_file)
     # Schedule the job every hour
-    schedule.every(10).seconds.do(job)
+    schedule.every(1800).seconds.do(job)
 
     # Run the scheduler
     while True:
