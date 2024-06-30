@@ -106,7 +106,9 @@ def clear_json_file(file_path):
 def final_command():
     print("Executing final command...")
     return_balance_sheet_change("nested_dataframes.json","net_bal_change.json")
+    print("Saving roi")
     save_roi_to_json(calculate_roi_from_balance_sheets("nested_dataframes.json"),"roi.json")
+    print("Clearing old balance sheet")
     clear_json_file("nested_dataframes.json")
     
 
@@ -153,7 +155,7 @@ def information_for_options(client):
             filtered_list = []
             expiry_timestamp = float(i['info']['expiration_timestamp'])/1000
             # Convert expiry timestamp to datetime
-            expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
+            expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp) 
 
             # Calculate current datetime plus 20 weeks
             current_datetime = datetime.utcnow()
@@ -414,7 +416,7 @@ def create_hedging_order(symbol, side,share_to_purchase):
         logging.info(f"Order details saved to {output_file}")
     except Exception as e:
         print(f"An error occurred: {e}")
-      
+        raise Exception(f"An error occurred: {e}")
         #print(client.get_symbol_info(symbol))        
         order = None
     
@@ -441,16 +443,19 @@ def calculate_and_place_order(symbol,old_delta):
         if share_to_purchase != 0:  # Only place an order if there's a change in delta
             if share_to_purchase < get_min_contract_size(symbol):
                 logging.warning(f"Share to purchase too small: {share_to_purchase}")
+ 
             else:
                 if new_delta > old_delta:
                     side = "BUY"
                 else:
                     side = "SELL"
-                create_hedging_order(symbol,side, round(abs(share_to_purchase),4))
+                print(f"Create hedging oreder for: {symbol} and {round(abs(share_to_purchase),6)}")
+                create_hedging_order(symbol,side, round(abs(share_to_purchase),6))
         else:
             logging.info(f"{datetime.now()}: No change in delta. No order placed.")
     except Exception as e:
-        logging.error(f"Error calculating and placing order: {e}") 
+        logging.error(f"Error calculating and placing order: {e}")
+        raise Exception(f"An error occurred: {e}")
 
 def update_time_index_balance_sheet(json_file_path):
     try: 
@@ -532,12 +537,13 @@ if __name__ == "__main__":
     #display_balances(balances)
     client=deribit_set_up("test")
     expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
-    #print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
-    symbol=symbol.split("-")[0]
-    symbol=symbol+"USDT"
-    symbol
+    print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
+    symbol = re.split('[-_]', symbol)[0]
+    # Append "USDT" to the first part of the split result
+    symbol = symbol + "USDT"
+    print(symbol)
 
-    #print(f"Converting to Binance symbol: {symbol}")
+    print(f"Converting to Binance symbol: {symbol}")
     with open("old_delta.json", 'r') as file:
 
         data = json.load(file)
@@ -555,7 +561,7 @@ if __name__ == "__main__":
         with open("old_delta.json", "w") as json_file:
             json.dump(old_delta, json_file)
     # Schedule the job every hour
-    schedule.every(1800).seconds.do(job)
+    schedule.every(10).seconds.do(job)
 
     # Run the scheduler
     while True:
