@@ -202,6 +202,7 @@ def information_for_options(client):
         return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
     except Exception as e:
         logging.error(f"Failed to retrieve options information: {e}")
+        print("ERROR INFO for option")
         return None, None, None, None, None
 # Function to get access token
 def get_access_token(client_id, client_secret):
@@ -400,7 +401,9 @@ def create_hedging_order(symbol, side,share_to_purchase):
     ticker = client.get_symbol_ticker(symbol=symbol)
     current_price = float(ticker['price'])
     logging.info(f"Current price of {symbol}: {current_price}")
+    print(f"Current price of {symbol}: {current_price}")
     logging.info(f"Share to purchase: {share_to_purchase}")
+    print(f"Current price of {symbol}: {current_price}")
     # Create a market order
     try:
         order = client.create_order(
@@ -441,8 +444,10 @@ def calculate_and_place_order(symbol,old_delta):
         contract_size=float(information_for_options(client)[-1])
         share_to_purchase = (new_delta - old_delta) * contract_size
         if share_to_purchase != 0:  # Only place an order if there's a change in delta
+           
             if share_to_purchase < get_min_contract_size(symbol):
                 logging.warning(f"Share to purchase too small: {share_to_purchase}")
+                print(f"Share to purchase too small: {share_to_purchase}")
  
             else:
                 if new_delta > old_delta:
@@ -453,6 +458,7 @@ def calculate_and_place_order(symbol,old_delta):
                 create_hedging_order(symbol,side, round(abs(share_to_purchase),6))
         else:
             logging.info(f"{datetime.now()}: No change in delta. No order placed.")
+            print("No Order placed no change in Delta")
     except Exception as e:
         logging.error(f"Error calculating and placing order: {e}")
         raise Exception(f"An error occurred: {e}")
@@ -538,7 +544,7 @@ if __name__ == "__main__":
     client=deribit_set_up("test")
     expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
     print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
-    symbol = re.split('[-_]', symbol)[0]
+    symbol = re.split('[-]', symbol)[0]
     # Append "USDT" to the first part of the split result
     symbol = symbol + "USDT"
     print(symbol)
@@ -558,6 +564,7 @@ if __name__ == "__main__":
         calculate_and_place_order(symbol,old_delta)
         old_delta=information_for_options(client)[-2]
         logging.info(f"Updated old_delta to: {old_delta}")
+        print(f"Updated old_delta to: {old_delta}")
         with open("old_delta.json", "w") as json_file:
             json.dump(old_delta, json_file)
     # Schedule the job every hour
