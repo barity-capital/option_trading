@@ -18,8 +18,42 @@ import re
 
 
 # Configure rotating file handler
-handler = RotatingFileHandler('app.log', maxBytes=5*1024*1024, backupCount=5)  # 5 MB per file, keep 5 backups
-logging.basicConfig(handlers=[handler], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+class CustomFormatter(logging.Formatter):
+    def __init__(self, fmt=None, datefmt=None, max_length=None):
+        super().__init__(fmt, datefmt)
+        self.max_length = max_length
+
+    def format(self, record):
+        if self.max_length and record.args:
+            truncated_args = []
+            for arg in record.args:
+                if isinstance(arg, str) and len(arg) > self.max_length:
+                    truncated_args.append(arg[:self.max_length] + '... [truncated]')
+                else:
+                    truncated_args.append(arg)
+            record.args = tuple(truncated_args)
+        return super().format(record)
+
+# Configure the logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Define a handler with a rotating file handler
+handler = RotatingFileHandler(
+    'C:\\Users\\Dan_Huynh\\Desktop\\Hedge\\app.log',
+    maxBytes=5*1024*1024,  # 5 MB
+    backupCount=5
+)
+
+# Define a custom formatter and set it to the handler
+formatter = CustomFormatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    max_length=100  # Limit the message length to 100 characters
+)
+handler.setFormatter(formatter)
+
+# Add the handler to the logger
+logger.addHandler(handler)
 # Configure rotating file handler
 current_time = datetime.now()
 print(current_time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -403,7 +437,6 @@ def create_hedging_order(symbol, side,share_to_purchase):
     logging.info(f"Current price of {symbol}: {current_price}")
     print(f"Current price of {symbol}: {current_price}")
     logging.info(f"Share to purchase: {share_to_purchase}")
-    print(f"Current price of {symbol}: {current_price}")
     # Create a market order
     try:
         order = client.create_order(
@@ -447,14 +480,14 @@ def calculate_and_place_order(symbol,old_delta):
            
             if share_to_purchase < get_min_contract_size(symbol):
                 logging.warning(f"Share to purchase too small: {share_to_purchase}")
-                print(f"Share to purchase too small: {share_to_purchase}")
+                raise ValueError(f"Quantity {share_to_purchase} is less than the minimum lot size {get_min_contract_size(symbol)}")
  
             else:
                 if new_delta > old_delta:
                     side = "BUY"
                 else:
                     side = "SELL"
-                print(f"Create hedging oreder for: {symbol} and {round(abs(share_to_purchase),6)}")
+                print(f"Create {side} hedging oreder for: {symbol} for {round(abs(share_to_purchase),6)}")
                 create_hedging_order(symbol,side, round(abs(share_to_purchase),6))
         else:
             logging.info(f"{datetime.now()}: No change in delta. No order placed.")
@@ -544,7 +577,7 @@ if __name__ == "__main__":
     client=deribit_set_up("test")
     expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
     print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nShare_to_purchase: {share_to_purchase}, \nDeribit symbol: {symbol}")
-    symbol = re.split('[-]', symbol)[0]
+    symbol = re.split('[-_]', symbol)[0]
     # Append "USDT" to the first part of the split result
     symbol = symbol + "USDT"
     print(symbol)
