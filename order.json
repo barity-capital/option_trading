@@ -1,0 +1,26 @@
+{
+    "symbol": "XRPUSDT",
+    "orderId": 3237386,
+    "orderListId": -1,
+    "clientOrderId": "067n2ECOSzRKEfRhgaetY7",
+    "transactTime": 1720279931444,
+    "price": "0.00000000",
+    "origQty": "12.00000000",
+    "executedQty": "12.00000000",
+    "cummulativeQuoteQty": "5.25600000",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "MARKET",
+    "side": "BUY",
+    "workingTime": 1720279931444,
+    "fills": [
+        {
+            "price": "0.43800000",
+            "qty": "12.00000000",
+            "commission": "0.00000000",
+            "commissionAsset": "XRP",
+            "tradeId": 185369
+        }
+    ],
+    "selfTradePreventionMode": "EXPIRE_MAKER"
+}
