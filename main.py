@@ -143,18 +143,24 @@ def clear_json_file(file_path):
 #FINAL EXIT COMMAND
 def final_command():
     print("Executing final command...")
-    return_balance_sheet_change("nested_dataframes.json","net_bal_change.json")
-    print("Saving roi")
-    save_roi_to_json(calculate_roi_from_balance_sheets("nested_dataframes.json"),"roi.json")
-    print("Clearing old balance sheet")
-    clear_json_file("nested_dataframes.json")
+    if total_order!=0:
+        print(f"Total orders: {total_order}")
+        return_balance_sheet_change("nested_dataframes.json","net_bal_change.json")
+        print("Saving roi")
+        save_roi_to_json(calculate_roi_from_balance_sheets("nested_dataframes.json"),"roi.json")
+        print("Clearing old balance sheet")
+        clear_json_file("nested_dataframes.json")
+    else: 
+        print("No Order placed")
+    
+   
     
 
 atexit.register(final_command)
 
 #Function to set up Deribit client
 def deribit_set_up(mode):
-    logger.info(f"We are in: {mode} mode")
+    logger.info(f"We are in Deribit: {mode} mode")
     client_id_testnet = "m_cYdGRs"
     client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
 
@@ -181,7 +187,8 @@ def deribit_set_up(mode):
         client.set_sandbox_mode(True)
     return client
 #Function to retrieve info
-def information_for_options(client):
+def information_for_options():
+    client=deribit_set_up("test")
     try:
         markets = client.fetch_markets()
         server_time = client.fetch_time()
@@ -274,7 +281,7 @@ def fetch_account_info(access_token):
 #Function to get account balance
 def get_account_balances(symbol=None):
     api_key,api_secret=get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=True)
+    client = Client(api_key, api_secret, testnet=testnet)
     time_offset=get_time_off_set("time.json")
     if time_offset:
         client.timestamp_offset = time_offset
@@ -345,7 +352,7 @@ def get_keys(filepath):
 #Function to sync time (generate an offset)
 def synchronize_time():
     api_key,api_secret=get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=True)
+    client = Client(api_key, api_secret, testnet=testnet)
     try:
         server_time = client.get_server_time()
         server_timestamp = server_time['serverTime']
@@ -420,7 +427,7 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
 def create_option_order(client):
     try:
         # Construct the order
-        symbol=information_for_options(client)[-3]
+        symbol=information_for_options()[-3]
         order = client.create_market_buy_order(symbol,1)
 
         print(f"Order created successfully on Deribit: {order}")
@@ -465,7 +472,7 @@ def get_min_notional(symbol):
 def create_hedging_order(symbol, side, share_to_purchase):
     # Connect to Binance testnet
     api_key, api_secret = get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=True)
+    client = Client(api_key, api_secret, testnet=testnet)
 
     # Get current price of the symbol
     
@@ -475,6 +482,8 @@ def create_hedging_order(symbol, side, share_to_purchase):
     if abs(share_to_purchase) < min_qty:
         raise ValueError(f"Quantity {share_to_purchase} is less than the minimum lot size {min_qty}")
     share_to_purchase = round_step_size(share_to_purchase, step_size)
+
+    
 
     
     # Create a market order
@@ -498,57 +507,86 @@ def create_hedging_order(symbol, side, share_to_purchase):
         print(f"An error occurred: {e}")
         logger.error(f"An error occurred: {e}")
         raise Exception(f"An error occurred: {e}")
-
+    total_order+=1
     return order
 
 
 def calculate_and_place_order(symbol):
-    with open("old_delta.json", 'r') as file:
-
-        old_delta = json.load(file)
-
-    api_key, api_secret = get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=True)
-
-    ticker = client.get_symbol_ticker(symbol=symbol)
-    current_price = float(ticker['price'])
     try:
-        client=deribit_set_up("test")
+        # Load old delta value from file
+        with open("old_delta.json", 'r') as file:
+            old_delta = json.load(file)
         old_delta = float(old_delta)
-        new_delta = float(information_for_options(client)[-2])
-        contract_size = float(information_for_options(client)[-1])
-        share_to_purchase = (new_delta - old_delta) * contract_size *4.3
 
-        
+        # Initialize Binance client
+        api_key, api_secret = get_keys("binance_keys.json")
+        client = Client(api_key, api_secret, testnet=testnet)
+
+        # Get current price for the symbol
+        ticker = client.get_symbol_ticker(symbol=symbol)
+        current_price = float(ticker['price'])
+
+        # Initialize Deribit client and fetch new delta and contract size
+        option_info = information_for_options()
+        new_delta = float(option_info[-2])
+        contract_size = float(option_info[-1])
+
+        # Calculate share to purchase
+        share_to_purchase = (new_delta - old_delta) * contract_size * 5
+
+        # Log current price and share to purchase
         logger.info(f"Current price of {symbol}: {current_price}")
         logger.info(f"Share to purchase: {share_to_purchase}")
 
         notional_value = current_price * share_to_purchase
         logger.info(f"The purchase order in USD is {notional_value}")
-        if notional_value >= 6:
-            if share_to_purchase != 0:  # Only place an order if there's a change in delta
-                min_qty, _ = get_lot_size(symbol)
-                if abs(share_to_purchase) < min_qty:
-                    logger.warning(f"Share to purchase too small: {share_to_purchase}")
-                else:
-                    side = "BUY" if new_delta > old_delta else "SELL"
-                    print(f"Create {side} hedging order for: {symbol} for {round(abs(share_to_purchase), 6)}")
-                    create_hedging_order(symbol, side, round(abs(share_to_purchase), 6))
-                    update_time_index_balance_sheet(json_file_path)
-                    logger.info("Performing delta look up")
-                    print(f"Calculating {symbol}'s delta")
-                    old_delta=information_for_options(client)[-2]
-                    logger.info(f"Updated old_delta to: {old_delta}")
-                    with open("old_delta.json", "w") as json_file:
-                        json.dump(old_delta, json_file)
-            else:
-                logger.info(f"{datetime.now()}: No change in delta. No order placed.")
-                print("No Order placed no change in Delta")
-        else: 
-            logger.warning(f"Notional price: {notional_value} too low cant place order")
+
+        # Check if there's a change in delta
+        if share_to_purchase == 0:
+            logger.info(f"{datetime.now()}: No change in delta. No order placed.")
+            return
+
+        # Check if notional value is sufficient
+        if abs(notional_value) < 6:
+            logger.warning(f"Notional value: {notional_value} too low, can't place order")
+            return
+
+        
+
+        # Check if the share to purchase meets minimum lot size
+        min_qty, _ = get_lot_size(symbol)
+        if abs(share_to_purchase) < min_qty:
+            logger.warning(f"Share to purchase too small: {share_to_purchase}")
+            return
+
+        # Determine the order side and check for sufficient liquidity if selling
+        side = "BUY" if new_delta > old_delta else "SELL"
+        liquid = get_account_balances(symbol)
+        if side == "SELL":
+            if not liquid or liquid[0]['Free'] < abs(share_to_purchase):
+                raise ValueError(f"Not enough {symbol} to trade: Needed to sell {abs(share_to_purchase)}, only have {liquid[0]['Free']}")
+
+        # Create hedging order
+        print(f"Create {side} hedging order for: {symbol} for {round(abs(share_to_purchase), 6)}")
+        create_hedging_order(symbol, side, round(abs(share_to_purchase), 6))
+        update_time_index_balance_sheet(json_file_path)
+
+        # Update old delta value
+        old_delta = new_delta
+        logger.info(f"Updated old_delta to: {old_delta}")
+        with open("old_delta.json", "w") as json_file:
+            json.dump(old_delta, json_file)
+
+    except json.JSONDecodeError:
+        logger.error("Error loading old delta value from file.")
+    except KeyError as e:
+        logger.error(f"Missing key in option information: {e}")
+    except ValueError as e:
+        logger.error(f"Value error: {e}")
     except Exception as e:
-        logger.error(f"Error calculating and placing order: {e}")
-        raise Exception(f"An error occurred: {e}")
+        logger.error(f"Unexpected error: {e}")
+
+
 def update_time_index_balance_sheet(json_file_path):
     try: 
         with open(json_file_path, 'r') as json_file:
@@ -556,7 +594,7 @@ def update_time_index_balance_sheet(json_file_path):
         balances=get_account_balances()
         current_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         nested_bal_dict[current_timestamp]=balances
-        print(len(nested_bal_dict))
+        logger.info(f"Length of nested bal: {len(nested_bal_dict)}")
         with open(json_file_path, 'w') as json_file:
             json.dump(nested_bal_dict, json_file, indent=4)
     except Exception as e:
@@ -619,7 +657,10 @@ def save_roi_to_json(roi_data, output_filepath):
 
 
 if __name__ == "__main__":
-    
+    global testnet
+    testnet=False
+    global total_order
+    total_order=0
 #     # When asks price of the OUT call (St - Ct): Ask > (St - Ct) || Ask < (St - Ct)
     
 #     # Dp + Dc != 0
@@ -627,8 +668,7 @@ if __name__ == "__main__":
     clear_json_file("net_bal_change.json")
     json_file_path = 'nested_dataframes.json'
     #display_balances(balances)
-    client=deribit_set_up("test")
-    expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options(client)
+    expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options()
     print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nDeribit symbol: {symbol}")
     symbol = re.split('[-_]', symbol)[0]
     # Append "USDT" to the first part of the split result
@@ -637,7 +677,7 @@ if __name__ == "__main__":
     print(f"Converting to Binance symbol: {symbol}")
     update_time_index_balance_sheet(json_file_path)
 
-    runtime=20
+    runtime=1800
 
     def job():
         synchronize_time()
