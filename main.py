@@ -710,9 +710,9 @@ if __name__ == "__main__":
 
     # Run the scheduler
     while True: 
-        
-        schedule.run_pending()
-        time.sleep(1)
+        for _ in tqdm(range(runtime), desc="Time until next job (seconds)"):
+                schedule.run_pending()
+                time.sleep(1)
 
     # Buy option
     # account = client.fetch_balance()
