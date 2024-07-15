@@ -17,10 +17,31 @@ from logging.handlers import RotatingFileHandler
 import re
 import warnings
 from tqdm import tqdm
+import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+while True:
+    try:
+        time_delta = int(input("Please enter the time delta in weeks: "))
+        if time_delta > 0:
+            break
+        else:
+            print("Time delta must be a positive integer. Please try again.")
+    except ValueError:
+        print("Invalid input. Please enter a positive integer.")
+print(f"We are using a delta of {time_delta} weeks")
 
+while True:
+    try:
+        runtime = int(input("Please enter the runtime in seconds: "))
+        if runtime > 0:
+            break
+        else:
+            print("Runtime must be a positive integer. Please try again.")
+    except ValueError:
+        print("Invalid input. Please enter a positive integer.")
+print(f"We are using a delta of {runtime} seconds")
 # Configure rotating file handler
 class CustomFormatter(logging.Formatter):
     def __init__(self, fmt=None, datefmt=None, max_length=None):
@@ -204,9 +225,9 @@ def information_for_options():
 
             # Calculate current datetime plus 20 weeks
             current_datetime = datetime.utcnow()
-            twenty_weeks_later = current_datetime + timedelta(weeks=20)
+            x_weeks_later = current_datetime + timedelta(weeks=time_delta)
             # Check if expiry datetime is greater than 20 weeks later
-            if expiry_datetime <= twenty_weeks_later:
+            if expiry_datetime <= x_weeks_later:
                 filtered_list.append(i)
                 # if call option and strike is not none, add to list
                 second_filtered_list = []
@@ -532,7 +553,7 @@ def calculate_and_place_order(symbol):
         contract_size = float(option_info[-1])
 
         # Calculate share to purchase
-        share_to_purchase = (new_delta - old_delta) * contract_size * 5
+        share_to_purchase = (new_delta - old_delta) * contract_size * 15
 
         # Log current price and share to purchase
         logger.info(f"Current price of {symbol}: {current_price}")
@@ -677,7 +698,6 @@ if __name__ == "__main__":
     print(f"Converting to Binance symbol: {symbol}")
     update_time_index_balance_sheet(json_file_path)
 
-    runtime=1800
 
     def job():
         synchronize_time()

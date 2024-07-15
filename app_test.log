@@ -28436,3 +28436,284 @@
 2024-07-14 13:16:27,399 - __main__ - INFO - The purchase order in USD is 18.41165999999999
 2024-07-14 13:16:28,379 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
 2024-07-14 13:16:28,379 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 13:30:06,841 - main - INFO - We are in Deribit: test mode
+2024-07-14 13:31:34,649 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 13:31:38,506 - __main__ - INFO - Length of nested bal: 34
+2024-07-14 14:01:39,570 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 14:01:43,070 - __main__ - INFO - Current price of XRPUSDT: 0.53
+2024-07-14 14:01:43,070 - __main__ - INFO - Share to purchase: 42.64999999999998
+2024-07-14 14:01:43,070 - __main__ - INFO - The purchase order in USD is 22.604499999999987
+2024-07-14 14:01:43,820 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 14:01:43,820 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 14:31:45,013 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 14:31:48,592 - __main__ - INFO - Current price of XRPUSDT: 0.5308
+2024-07-14 14:31:48,592 - __main__ - INFO - Share to purchase: 45.099999999999994
+2024-07-14 14:31:48,592 - __main__ - INFO - The purchase order in USD is 23.93908
+2024-07-14 14:31:49,657 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 14:31:49,657 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 15:01:50,034 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 15:01:53,376 - __main__ - INFO - Current price of XRPUSDT: 0.5297
+2024-07-14 15:01:53,376 - __main__ - INFO - Share to purchase: 41.95000000000001
+2024-07-14 15:01:53,376 - __main__ - INFO - The purchase order in USD is 22.220915
+2024-07-14 15:01:54,284 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 15:01:54,284 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 15:31:55,578 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 15:31:58,924 - __main__ - INFO - Current price of XRPUSDT: 0.5261
+2024-07-14 15:31:58,924 - __main__ - INFO - Share to purchase: 33.3
+2024-07-14 15:31:58,924 - __main__ - INFO - The purchase order in USD is 17.51913
+2024-07-14 15:32:00,050 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 15:32:00,050 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 16:02:00,544 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 16:02:03,922 - __main__ - INFO - Current price of XRPUSDT: 0.5267
+2024-07-14 16:02:03,922 - __main__ - INFO - Share to purchase: 34.499999999999986
+2024-07-14 16:02:03,922 - __main__ - INFO - The purchase order in USD is 18.17114999999999
+2024-07-14 16:02:04,871 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 16:02:04,871 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 16:32:05,730 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 16:32:09,492 - __main__ - INFO - Current price of XRPUSDT: 0.5297
+2024-07-14 16:32:09,492 - __main__ - INFO - Share to purchase: 41.7
+2024-07-14 16:32:09,492 - __main__ - INFO - The purchase order in USD is 22.08849
+2024-07-14 16:32:10,423 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 16:32:10,423 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 17:02:12,093 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 17:02:15,580 - __main__ - INFO - Current price of XRPUSDT: 0.5299
+2024-07-14 17:02:15,580 - __main__ - INFO - Share to purchase: 42.64999999999998
+2024-07-14 17:02:15,580 - __main__ - INFO - The purchase order in USD is 22.60023499999999
+2024-07-14 17:02:16,656 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 17:02:16,656 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 17:32:17,537 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 17:32:21,313 - __main__ - INFO - Current price of XRPUSDT: 0.5302
+2024-07-14 17:32:21,313 - __main__ - INFO - Share to purchase: 43.4
+2024-07-14 17:32:21,313 - __main__ - INFO - The purchase order in USD is 23.01068
+2024-07-14 17:32:22,166 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 17:32:22,166 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 18:02:23,218 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 18:02:26,510 - __main__ - INFO - Current price of XRPUSDT: 0.5309
+2024-07-14 18:02:26,510 - __main__ - INFO - Share to purchase: 44.849999999999994
+2024-07-14 18:02:26,510 - __main__ - INFO - The purchase order in USD is 23.810865
+2024-07-14 18:02:27,376 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 18:02:27,376 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 18:32:28,516 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 18:32:32,052 - __main__ - INFO - Current price of XRPUSDT: 0.5304
+2024-07-14 18:32:32,052 - __main__ - INFO - Share to purchase: 43.65000000000001
+2024-07-14 18:32:32,052 - __main__ - INFO - The purchase order in USD is 23.151960000000006
+2024-07-14 18:32:32,833 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 18:32:32,833 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 19:02:33,923 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 19:02:37,443 - __main__ - INFO - Current price of XRPUSDT: 0.532
+2024-07-14 19:02:37,443 - __main__ - INFO - Share to purchase: 47.299999999999976
+2024-07-14 19:02:37,458 - __main__ - INFO - The purchase order in USD is 25.163599999999988
+2024-07-14 19:02:38,257 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 19:02:38,257 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 19:32:39,303 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 19:32:42,786 - __main__ - INFO - Current price of XRPUSDT: 0.5328
+2024-07-14 19:32:42,786 - __main__ - INFO - Share to purchase: 49.49999999999999
+2024-07-14 19:32:42,786 - __main__ - INFO - The purchase order in USD is 26.3736
+2024-07-14 19:32:43,538 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 19:32:43,538 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 20:02:43,911 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 20:02:47,587 - __main__ - INFO - Current price of XRPUSDT: 0.5325
+2024-07-14 20:02:47,587 - __main__ - INFO - Share to purchase: 48.050000000000004
+2024-07-14 20:02:47,587 - __main__ - INFO - The purchase order in USD is 25.586625
+2024-07-14 20:02:48,591 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 20:02:48,591 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 20:32:49,899 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 20:32:53,436 - __main__ - INFO - Current price of XRPUSDT: 0.5318
+2024-07-14 20:32:53,436 - __main__ - INFO - Share to purchase: 47.05000000000001
+2024-07-14 20:32:53,436 - __main__ - INFO - The purchase order in USD is 25.021190000000008
+2024-07-14 20:32:54,201 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 20:32:54,201 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 21:02:55,194 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 21:02:58,603 - __main__ - INFO - Current price of XRPUSDT: 0.5296
+2024-07-14 21:02:58,603 - __main__ - INFO - Share to purchase: 41.7
+2024-07-14 21:02:58,603 - __main__ - INFO - The purchase order in USD is 22.084319999999998
+2024-07-14 21:02:59,346 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 21:02:59,362 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 21:33:00,457 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 21:33:03,915 - __main__ - INFO - Current price of XRPUSDT: 0.5288
+2024-07-14 21:33:03,915 - __main__ - INFO - Share to purchase: 39.499999999999986
+2024-07-14 21:33:03,915 - __main__ - INFO - The purchase order in USD is 20.887599999999996
+2024-07-14 21:33:04,723 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 21:33:04,723 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 22:03:06,070 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 22:03:09,355 - __main__ - INFO - Current price of XRPUSDT: 0.528
+2024-07-14 22:03:09,355 - __main__ - INFO - Share to purchase: 37.599999999999994
+2024-07-14 22:03:09,355 - __main__ - INFO - The purchase order in USD is 19.8528
+2024-07-14 22:03:10,693 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 22:03:10,693 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 22:33:11,881 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 22:33:15,251 - __main__ - INFO - Current price of XRPUSDT: 0.5265
+2024-07-14 22:33:15,251 - __main__ - INFO - Share to purchase: 34.499999999999986
+2024-07-14 22:33:15,251 - __main__ - INFO - The purchase order in USD is 18.164249999999992
+2024-07-14 22:33:16,242 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 22:33:16,242 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 23:03:16,827 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 23:03:20,245 - __main__ - INFO - Current price of XRPUSDT: 0.5283
+2024-07-14 23:03:20,245 - __main__ - INFO - Share to purchase: 38.3
+2024-07-14 23:03:20,245 - __main__ - INFO - The purchase order in USD is 20.23389
+2024-07-14 23:03:21,267 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 23:03:21,267 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 23:33:22,246 - __main__ - INFO - We are in Deribit: test mode
+2024-07-14 23:33:25,884 - __main__ - INFO - Current price of XRPUSDT: 0.5236
+2024-07-14 23:33:25,884 - __main__ - INFO - Share to purchase: 27.200000000000003
+2024-07-14 23:33:25,884 - __main__ - INFO - The purchase order in USD is 14.24192
+2024-07-14 23:33:27,185 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-14 23:33:27,185 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 00:03:28,284 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 00:03:31,882 - __main__ - INFO - Current price of XRPUSDT: 0.5217
+2024-07-15 00:03:31,882 - __main__ - INFO - Share to purchase: 22.800000000000008
+2024-07-15 00:03:31,882 - __main__ - INFO - The purchase order in USD is 11.894760000000005
+2024-07-15 00:03:32,776 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 00:03:32,776 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 00:33:33,835 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 00:33:37,250 - __main__ - INFO - Current price of XRPUSDT: 0.5258
+2024-07-15 00:33:37,250 - __main__ - INFO - Share to purchase: 32.10000000000001
+2024-07-15 00:33:37,250 - __main__ - INFO - The purchase order in USD is 16.878180000000008
+2024-07-15 00:33:38,398 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 00:33:38,398 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 01:03:39,822 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 01:03:43,235 - __main__ - INFO - Current price of XRPUSDT: 0.5241
+2024-07-15 01:03:43,235 - __main__ - INFO - Share to purchase: 28.35000000000001
+2024-07-15 01:03:43,235 - __main__ - INFO - The purchase order in USD is 14.858235000000004
+2024-07-15 01:03:44,365 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 01:03:44,365 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 01:33:45,398 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 01:33:48,897 - __main__ - INFO - Current price of XRPUSDT: 0.5238
+2024-07-15 01:33:48,897 - __main__ - INFO - Share to purchase: 27.650000000000002
+2024-07-15 01:33:48,897 - __main__ - INFO - The purchase order in USD is 14.483070000000001
+2024-07-15 01:33:49,691 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 01:33:49,691 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 02:03:50,929 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 02:03:54,249 - __main__ - INFO - Current price of XRPUSDT: 0.5287
+2024-07-15 02:03:54,249 - __main__ - INFO - Share to purchase: 39.499999999999986
+2024-07-15 02:03:54,249 - __main__ - INFO - The purchase order in USD is 20.88364999999999
+2024-07-15 02:03:55,068 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 02:03:55,068 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 02:33:55,434 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 02:33:58,900 - __main__ - INFO - Current price of XRPUSDT: 0.531
+2024-07-15 02:33:58,900 - __main__ - INFO - Share to purchase: 45.099999999999994
+2024-07-15 02:33:58,900 - __main__ - INFO - The purchase order in USD is 23.948099999999997
+2024-07-15 02:33:59,835 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 02:33:59,835 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 03:04:01,037 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 03:04:04,202 - __main__ - INFO - Current price of XRPUSDT: 0.5265
+2024-07-15 03:04:04,202 - __main__ - INFO - Share to purchase: 34.0
+2024-07-15 03:04:04,202 - __main__ - INFO - The purchase order in USD is 17.901
+2024-07-15 03:04:04,965 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 03:04:04,965 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 03:34:06,342 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 03:34:09,774 - __main__ - INFO - Current price of XRPUSDT: 0.5294
+2024-07-15 03:34:09,774 - __main__ - INFO - Share to purchase: 41.19999999999998
+2024-07-15 03:34:09,774 - __main__ - INFO - The purchase order in USD is 21.81127999999999
+2024-07-15 03:34:11,075 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 03:34:11,075 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 04:04:11,826 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 04:04:15,244 - __main__ - INFO - Current price of XRPUSDT: 0.5269
+2024-07-15 04:04:15,244 - __main__ - INFO - Share to purchase: 35.19999999999999
+2024-07-15 04:04:15,244 - __main__ - INFO - The purchase order in USD is 18.546879999999994
+2024-07-15 04:04:16,645 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 04:04:16,645 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 04:34:18,141 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 04:34:21,541 - __main__ - INFO - Current price of XRPUSDT: 0.5288
+2024-07-15 04:34:21,541 - __main__ - INFO - Share to purchase: 39.74999999999999
+2024-07-15 04:34:21,541 - __main__ - INFO - The purchase order in USD is 21.019799999999996
+2024-07-15 04:34:22,751 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 04:34:22,751 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 05:04:23,950 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 05:04:27,821 - __main__ - INFO - Current price of XRPUSDT: 0.5297
+2024-07-15 05:04:27,821 - __main__ - INFO - Share to purchase: 41.7
+2024-07-15 05:04:27,821 - __main__ - INFO - The purchase order in USD is 22.08849
+2024-07-15 05:04:28,791 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 05:04:28,791 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 05:34:29,255 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 05:34:32,739 - __main__ - INFO - Current price of XRPUSDT: 0.5304
+2024-07-15 05:34:32,739 - __main__ - INFO - Share to purchase: 43.849999999999994
+2024-07-15 05:34:32,739 - __main__ - INFO - The purchase order in USD is 23.258039999999998
+2024-07-15 05:34:33,963 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 05:34:33,963 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 06:04:34,526 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 06:04:38,034 - __main__ - INFO - Current price of XRPUSDT: 0.528
+2024-07-15 06:04:38,034 - __main__ - INFO - Share to purchase: 37.85
+2024-07-15 06:04:38,034 - __main__ - INFO - The purchase order in USD is 19.984800000000003
+2024-07-15 06:04:38,794 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 06:04:38,794 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 06:34:39,469 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 06:34:43,043 - __main__ - INFO - Current price of XRPUSDT: 0.5329
+2024-07-15 06:34:43,043 - __main__ - INFO - Share to purchase: 50.00000000000001
+2024-07-15 06:34:43,043 - __main__ - INFO - The purchase order in USD is 26.645000000000007
+2024-07-15 06:34:44,158 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 06:34:44,174 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 07:04:45,490 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 07:04:48,760 - __main__ - INFO - Current price of XRPUSDT: 0.5285
+2024-07-15 07:04:48,760 - __main__ - INFO - Share to purchase: 39.499999999999986
+2024-07-15 07:04:48,760 - __main__ - INFO - The purchase order in USD is 20.875749999999993
+2024-07-15 07:04:49,788 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 07:04:49,788 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 07:34:50,407 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 07:34:53,961 - __main__ - INFO - Current price of XRPUSDT: 0.5296
+2024-07-15 07:34:53,961 - __main__ - INFO - Share to purchase: 41.7
+2024-07-15 07:34:53,961 - __main__ - INFO - The purchase order in USD is 22.084319999999998
+2024-07-15 07:34:55,319 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 07:34:55,319 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 08:04:56,627 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 08:05:00,038 - __main__ - INFO - Current price of XRPUSDT: 0.53
+2024-07-15 08:05:00,038 - __main__ - INFO - Share to purchase: 42.64999999999998
+2024-07-15 08:05:00,038 - __main__ - INFO - The purchase order in USD is 22.604499999999987
+2024-07-15 08:05:01,598 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 08:05:01,598 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 08:35:03,001 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 08:35:06,505 - __main__ - INFO - Current price of XRPUSDT: 0.5314
+2024-07-15 08:35:06,505 - __main__ - INFO - Share to purchase: 46.049999999999976
+2024-07-15 08:35:06,505 - __main__ - INFO - The purchase order in USD is 24.470969999999987
+2024-07-15 08:35:07,549 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 08:35:07,549 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 09:05:09,132 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 09:05:12,514 - __main__ - INFO - Current price of XRPUSDT: 0.5283
+2024-07-15 09:05:12,514 - __main__ - INFO - Share to purchase: 38.3
+2024-07-15 09:05:12,514 - __main__ - INFO - The purchase order in USD is 20.23389
+2024-07-15 09:05:13,803 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 09:05:13,803 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 09:35:14,571 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 09:35:18,047 - __main__ - INFO - Current price of XRPUSDT: 0.5316
+2024-07-15 09:35:18,047 - __main__ - INFO - Share to purchase: 46.55
+2024-07-15 09:35:18,047 - __main__ - INFO - The purchase order in USD is 24.745979999999996
+2024-07-15 09:35:19,348 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 09:35:19,348 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 10:05:20,331 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 10:05:23,931 - __main__ - INFO - Current price of XRPUSDT: 0.5323
+2024-07-15 10:05:23,931 - __main__ - INFO - Share to purchase: 48.30000000000001
+2024-07-15 10:05:23,931 - __main__ - INFO - The purchase order in USD is 25.710090000000005
+2024-07-15 10:05:25,204 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 10:05:25,204 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 10:35:26,541 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 10:35:30,246 - __main__ - INFO - Current price of XRPUSDT: 0.5327
+2024-07-15 10:35:30,246 - __main__ - INFO - Share to purchase: 49.75000000000001
+2024-07-15 10:35:30,246 - __main__ - INFO - The purchase order in USD is 26.501825
+2024-07-15 10:35:31,573 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 10:35:31,573 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 11:05:32,709 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 11:05:36,093 - __main__ - INFO - Current price of XRPUSDT: 0.5386
+2024-07-15 11:05:36,093 - __main__ - INFO - Share to purchase: 63.84999999999998
+2024-07-15 11:05:36,093 - __main__ - INFO - The purchase order in USD is 34.38960999999999
+2024-07-15 11:05:37,447 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 11:05:37,447 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 11:35:38,188 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 11:35:41,605 - __main__ - INFO - Current price of XRPUSDT: 0.5354
+2024-07-15 11:35:41,605 - __main__ - INFO - Share to purchase: 55.499999999999986
+2024-07-15 11:35:41,605 - __main__ - INFO - The purchase order in USD is 29.71469999999999
+2024-07-15 11:35:43,095 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 11:35:43,095 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 12:11:09,842 - main - INFO - We are in Deribit: test mode
+2024-07-15 12:11:21,993 - main - INFO - We are in Deribit: test mode
+2024-07-15 12:19:51,449 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 12:19:55,683 - __main__ - INFO - Length of nested bal: 35
+2024-07-15 12:20:18,324 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 12:20:22,043 - __main__ - INFO - Length of nested bal: 36
+2024-07-15 12:20:46,763 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 12:20:50,639 - __main__ - INFO - Length of nested bal: 37
+2024-07-15 12:50:51,672 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 12:50:55,308 - __main__ - INFO - Current price of XRPUSDT: 0.5334
+2024-07-15 12:50:55,308 - __main__ - INFO - Share to purchase: 51.00000000000001
+2024-07-15 12:50:55,308 - __main__ - INFO - The purchase order in USD is 27.203400000000002
+2024-07-15 12:50:56,356 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-15 12:50:56,356 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
