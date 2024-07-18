@@ -170,9 +170,10 @@ def final_command():
         print("Saving roi")
         save_roi_to_json(calculate_roi_from_balance_sheets("nested_dataframes.json"),"roi.json")
         print("Clearing old balance sheet")
-        clear_json_file("nested_dataframes.json")
+        
     else: 
         print("No Order placed")
+    clear_json_file("nested_dataframes.json")
     
    
     

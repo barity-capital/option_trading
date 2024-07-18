@@ -28738,3 +28738,9 @@
 2024-07-18 13:35:52,591 - __main__ - INFO - We are in Deribit: test mode
 2024-07-18 13:35:53,529 - __main__ - ERROR - Failed to retrieve options information: deribit {"jsonrpc":"2.0","error":{"message":"system_maintenance","code":11051}}
 2024-07-18 13:35:53,529 - __main__ - ERROR - Unexpected error: float() argument must be a string or a real number, not 'NoneType'
+2024-07-18 15:46:32,518 - __main__ - INFO - We are in Deribit: test mode
+2024-07-18 15:46:37,429 - __main__ - INFO - Length of nested bal: 41
+2024-07-18 15:47:13,171 - __main__ - INFO - We are in Deribit: test mode
+2024-07-18 15:47:17,820 - __main__ - INFO - Length of nested bal: 42
+2024-07-18 15:58:18,876 - __main__ - INFO - We are in Deribit: test mode
+2024-07-18 15:58:23,089 - __main__ - INFO - Length of nested bal: 43
