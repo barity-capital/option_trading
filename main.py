@@ -584,7 +584,7 @@ def calculate_and_place_order(symbol):
         side = "BUY" if new_delta > old_delta else "SELL"
         liquid = get_account_balances(symbol)
         if side == "SELL":
-            if not liquid or liquid[0]['Free'] < abs(share_to_purchase):
+            if not liquid or liquid[1]['Free'] < abs(share_to_purchase):
                 raise ValueError(f"Not enough {symbol} to trade: Needed to sell {abs(share_to_purchase)}, only have {liquid[0]['Free']}")
 
         # Create hedging order

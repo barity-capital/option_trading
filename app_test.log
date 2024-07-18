@@ -28721,3 +28721,20 @@
 2024-07-15 13:32:20,815 - __main__ - INFO - Length of nested bal: 38
 2024-07-15 13:34:37,054 - __main__ - INFO - We are in Deribit: test mode
 2024-07-15 13:34:40,898 - __main__ - INFO - Length of nested bal: 39
+2024-07-15 13:35:35,181 - __main__ - INFO - We are in Deribit: test mode
+2024-07-15 13:35:38,728 - __main__ - INFO - Length of nested bal: 40
+2024-07-16 13:35:40,187 - __main__ - INFO - We are in Deribit: test mode
+2024-07-16 13:35:43,847 - __main__ - INFO - Current price of ETHUSDT: 3413.94
+2024-07-16 13:35:43,848 - __main__ - INFO - Share to purchase: 1.03035
+2024-07-16 13:35:43,848 - __main__ - INFO - The purchase order in USD is 3517.5530790000003
+2024-07-16 13:35:44,652 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-16 13:35:44,652 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-17 13:35:45,445 - __main__ - INFO - We are in Deribit: test mode
+2024-07-17 13:35:49,104 - __main__ - INFO - Current price of ETHUSDT: 3457.63
+2024-07-17 13:35:49,105 - __main__ - INFO - Share to purchase: 1.0912499999999998
+2024-07-17 13:35:49,105 - __main__ - INFO - The purchase order in USD is 3773.1387374999995
+2024-07-17 13:35:50,420 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-17 13:35:50,421 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-18 13:35:52,591 - __main__ - INFO - We are in Deribit: test mode
+2024-07-18 13:35:53,529 - __main__ - ERROR - Failed to retrieve options information: deribit {"jsonrpc":"2.0","error":{"message":"system_maintenance","code":11051}}
+2024-07-18 13:35:53,529 - __main__ - ERROR - Unexpected error: float() argument must be a string or a real number, not 'NoneType'
