@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  trading-bot-1:
+    build: .
+    container_name: trading_bot_1
+    env_file:
+      - config.env
+    volumes:
+      - .:/usr/src/app
+    command: ["python", "main.py"]
+
+  trading-bot-2:
+    build: .
+    container_name: trading_bot_2
+    env_file:
+      - config2.env
+    volumes:
+      - .:/usr/src/app
+    command: ["python", "main.py"]

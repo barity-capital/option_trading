@@ -29406,3 +29406,9 @@
 2024-07-20 12:26:06,260 - __main__ - INFO - Share to purchase: 1.39665
 2024-07-20 12:26:06,261 - __main__ - INFO - The purchase order in USD is 0.830308425
 2024-07-20 12:26:06,265 - __main__ - WARNING - Notional value: 0.830308425 too low, can't place order
+2024-07-20 14:08:56,442 - __main__ - INFO - We are in Deribit: test mode
+2024-07-20 14:09:02,305 - __main__ - INFO - Length of nested bal: 1
+2024-07-20 14:15:57,806 - __main__ - INFO - We are in Deribit: test mode
+2024-07-20 14:15:57,806 - __main__ - INFO - We are in Deribit: test mode
+2024-07-20 14:16:03,201 - __main__ - INFO - Length of nested bal: 2
+2024-07-20 14:16:03,480 - __main__ - INFO - Length of nested bal: 2

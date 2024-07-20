@@ -21,6 +21,12 @@ import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+time_delta = int(os.getenv('TIME_DELTA', '1'))  # Default to 1 week if not set
+runtime = int(os.getenv('RUNTIME', '3600'))  # Default to 3600 seconds (1 hour) if not set
+
+print(f"We are using a delta of {time_delta} weeks")
+print(f"We are using a runtime of {runtime} seconds")
+
 
 binance_api_key = os.getenv('BINANCE_API_KEY')
 binance_api_secret = os.getenv('BINANCE_API_SECRET')
@@ -30,27 +36,27 @@ deribit_client_id_realnet = os.getenv('DERIBIT_CLIENT_ID_REALNET')
 deribit_client_secret_realnet = os.getenv('DERIBIT_CLIENT_SECRET_REALNET')
 mode=os.getenv("MODE")
 
-while True:
-    try:
-        time_delta = int(input("Please enter the time delta in weeks: "))
-        if time_delta > 0:
-            break
-        else:
-            print("Time delta must be a positive integer. Please try again.")
-    except ValueError:
-        print("Invalid input. Please enter a positive integer.")
-print(f"We are using a delta of {time_delta} weeks")
+# while True:
+#     try:
+#         time_delta = int(input("Please enter the time delta in weeks: "))
+#         if time_delta > 0:
+#             break
+#         else:
+#             print("Time delta must be a positive integer. Please try again.")
+#     except ValueError:
+#         print("Invalid input. Please enter a positive integer.")
+# print(f"We are using a delta of {time_delta} weeks")
 
-while True:
-    try:
-        runtime = int(input("Please enter the runtime in seconds: "))
-        if runtime > 0:
-            break
-        else:
-            print("Runtime must be a positive integer. Please try again.")
-    except ValueError:
-        print("Invalid input. Please enter a positive integer.")
-print(f"We are using a delta of {runtime} seconds")
+# while True:
+#     try:
+#         runtime = int(input("Please enter the runtime in seconds: "))
+#         if runtime > 0:
+#             break
+#         else:
+#             print("Runtime must be a positive integer. Please try again.")
+#     except ValueError:
+#         print("Invalid input. Please enter a positive integer.")
+# print(f"We are using a delta of {runtime} seconds")
 # Configure rotating file handler
 class CustomFormatter(logging.Formatter):
     def __init__(self, fmt=None, datefmt=None, max_length=None):
