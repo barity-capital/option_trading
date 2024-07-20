@@ -21,6 +21,15 @@ import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+
+binance_api_key = os.getenv('BINANCE_API_KEY')
+binance_api_secret = os.getenv('BINANCE_API_SECRET')
+deribit_client_id_testnet = os.getenv('DERIBIT_CLIENT_ID_TESTNET')
+deribit_client_secret_testnet = os.getenv('DERIBIT_CLIENT_SECRET_TESTNET')
+deribit_client_id_realnet = os.getenv('DERIBIT_CLIENT_ID_REALNET')
+deribit_client_secret_realnet = os.getenv('DERIBIT_CLIENT_SECRET_REALNET')
+mode=os.getenv("MODE")
+
 while True:
     try:
         time_delta = int(input("Please enter the time delta in weeks: "))
@@ -181,21 +190,17 @@ def final_command():
 atexit.register(final_command)
 
 #Function to set up Deribit client
-def deribit_set_up(mode):
+def deribit_set_up():
     logger.info(f"We are in Deribit: {mode} mode")
-    client_id_testnet = "m_cYdGRs"
-    client_secret_testnet = "CFMj4XERdBpYU5f-xGiEeM6q29WWPh78KbOllO8I5nI"
 
-    client_id_realnet = "VUSrWKNX"
-    client_secret_realnet = "CNIEmjiKy2p-h28O4Mda1QKD8hXJ3duA5rAODdLfvwE"
-
+    
     if mode == "test":
-        client_id = client_id_testnet
-        client_secret = client_secret_testnet
+        client_id = deribit_client_id_testnet
+        client_secret = deribit_client_secret_testnet
         base_url = 'https://test.deribit.com/api/v2/' # test base url
     else:
-        client_id = client_id_realnet
-        client_secret = client_secret_realnet
+        client_id = deribit_client_id_realnet
+        client_secret = deribit_client_secret_realnet
         base_url = 'https://www.deribit.com/api/v2/'
 
     logging.info(f"The base url: {base_url}")
@@ -210,7 +215,7 @@ def deribit_set_up(mode):
     return client
 #Function to retrieve info
 def information_for_options():
-    client=deribit_set_up("test")
+    client=deribit_set_up()
     try:
         markets = client.fetch_markets()
         server_time = client.fetch_time()
@@ -302,8 +307,8 @@ def fetch_account_info(access_token):
         raise Exception('Failed to fetch account information: ' + response_data.get('error', {}).get('message', 'Unknown error'))    
 #Function to get account balance
 def get_account_balances(symbol=None):
-    api_key,api_secret=get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=testnet)
+
+    client = Client(binance_api_key, binance_api_secret, testnet=testnet)
     time_offset=get_time_off_set("time.json")
     if time_offset:
         client.timestamp_offset = time_offset
@@ -365,16 +370,11 @@ def display_balances(balances):
 def create_signature(query_string, secret_key):
     return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
 #Function for key extract
-def get_keys(filepath):
-    with open(filepath) as key_file:
-        config = json.load(key_file)
-        api_key = config['api_key']
-        api_secret=config['api_secret']
-    return api_key,api_secret
+
 #Function to sync time (generate an offset)
 def synchronize_time():
-    api_key,api_secret=get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=testnet)
+
+    client = Client(binance_api_key,binance_api_secret, testnet=testnet)
     try:
         server_time = client.get_server_time()
         server_timestamp = server_time['serverTime']
@@ -391,19 +391,19 @@ def get_time_off_set(filepath):
     return time_offset
 # Function to get all open orders from Binance Spot Testnet
 def get_all_open_orders():
-    api_key,api_secret=get_keys("binance_keys.json")
+    
     base_url = 'https://testnet.binance.vision'
     endpoint = '/api/v3/openOrders'
     timestamp = int(time.time() * 1000)
     query_string = f'timestamp={timestamp}'
 
     # Creating a signature
-    signature = create_signature(query_string, api_secret)
+    signature = create_signature(query_string, binance_api_secret)
     query_string += f'&signature={signature}'
 
     # Header with API key
     headers = {
-        'X-MBX-APIKEY': api_key
+        'X-MBX-APIKEY': binance_api_key
     }
 
     # Sending the GET request
@@ -421,7 +421,6 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
     base_url = 'https://testnet.binance.vision'
     endpoint = '/api/v3/allOrders'
     timestamp = int(time.time() * 1000)
-    api_key,api_secret=get_keys("binance_keys.json")    
     # Create query string
     query_string = f'symbol={symbol}&timestamp={timestamp}&limit={limit}'
     if start_time:
@@ -430,11 +429,11 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
         query_string += f'&endTime={end_time}'
 
     # Create signature
-    signature = create_signature(query_string, api_secret)
+    signature = create_signature(query_string, binance_api_secret)
     query_string += f'&signature={signature}'
 
     # Headers
-    headers = {'X-MBX-APIKEY': api_key}
+    headers = {'X-MBX-APIKEY': binance_api_key}
 
     # Send GET request
     url = f'{base_url}{endpoint}?{query_string}'
@@ -493,8 +492,7 @@ def get_min_notional(symbol):
 
 def create_hedging_order(symbol, side, share_to_purchase):
     # Connect to Binance testnet
-    api_key, api_secret = get_keys("binance_keys.json")
-    client = Client(api_key, api_secret, testnet=testnet)
+    client = Client(binance_api_key, binance_api_secret, testnet=testnet)
 
     # Get current price of the symbol
     
@@ -541,8 +539,8 @@ def calculate_and_place_order(symbol):
         old_delta = float(old_delta)
 
         # Initialize Binance client
-        api_key, api_secret = get_keys("binance_keys.json")
-        client = Client(api_key, api_secret, testnet=testnet)
+        
+        client = Client(binance_api_key, binance_api_secret, testnet=testnet)
 
         # Get current price for the symbol
         ticker = client.get_symbol_ticker(symbol=symbol)
