@@ -561,7 +561,7 @@ def calculate_and_place_order(symbol):
         logger.info(f"Share to purchase: {share_to_purchase}")
 
         notional_value = current_price * share_to_purchase
-        logger.info(f"The purchase order in USD is {notional_value}")
+        logger.info(f"The purchase order in USD is {abs(notional_value)}")
 
         # Check if there's a change in delta
         if share_to_purchase == 0:
@@ -586,9 +586,12 @@ def calculate_and_place_order(symbol):
         liquid = get_account_balances(symbol)
         if side == "SELL":
             if not liquid or liquid[1]['Free'] < abs(share_to_purchase):
-                raise ValueError(f"Not enough {symbol} to trade: Needed to sell {abs(share_to_purchase)}, only have {liquid[0]['Free']}")
+                logger.warning(f"Not enough {symbol} to trade: Needed to sell {abs(share_to_purchase)}, only have {liquid[1]['Free']}")
+                logger.warning(f"Sell all {liquid[1]['Free']}")
+                share_to_purchase=liquid[1]['Free']
 
         # Create hedging order
+        
         print(f"Create {side} hedging order for: {symbol} for {round(abs(share_to_purchase), 6)}")
         create_hedging_order(symbol, side, round(abs(share_to_purchase), 6))
         update_time_index_balance_sheet(json_file_path)
