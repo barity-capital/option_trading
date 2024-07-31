@@ -1,6 +1,3 @@
-"""
-A call option is OTM if the underlying price is trading below the strike price of the call. A put option is OTM if the underlying's price is above the put's strike price.
-"""
 import ccxt
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
@@ -18,6 +15,11 @@ import re
 import warnings
 from tqdm import tqdm
 import os
+from dotenv import load_dotenv
+
+
+
+load_dotenv("config.env")
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -36,28 +38,7 @@ deribit_client_id_realnet = os.getenv('DERIBIT_CLIENT_ID_REALNET')
 deribit_client_secret_realnet = os.getenv('DERIBIT_CLIENT_SECRET_REALNET')
 mode=os.getenv("MODE")
 
-# while True:
-#     try:
-#         time_delta = int(input("Please enter the time delta in weeks: "))
-#         if time_delta > 0:
-#             break
-#         else:
-#             print("Time delta must be a positive integer. Please try again.")
-#     except ValueError:
-#         print("Invalid input. Please enter a positive integer.")
-# print(f"We are using a delta of {time_delta} weeks")
 
-# while True:
-#     try:
-#         runtime = int(input("Please enter the runtime in seconds: "))
-#         if runtime > 0:
-#             break
-#         else:
-#             print("Runtime must be a positive integer. Please try again.")
-#     except ValueError:
-#         print("Invalid input. Please enter a positive integer.")
-# print(f"We are using a delta of {runtime} seconds")
-# Configure rotating file handler
 class CustomFormatter(logging.Formatter):
     def __init__(self, fmt=None, datefmt=None, max_length=None):
         super().__init__(fmt, datefmt)
@@ -102,7 +83,6 @@ print(current_time.strftime('%Y-%m-%d %H:%M:%S'))
 def sanitize_filename(filename):
     # Replace invalid characters with underscores
     return re.sub(r'[<>:"/\\|?*]', '_', filename)
-
 
 def return_balance_sheet_change(filepath, destinationpath):
     try:
@@ -190,11 +170,7 @@ def final_command():
         print("No Order placed")
     clear_json_file("nested_dataframes.json")
     
-   
-    
-
 atexit.register(final_command)
-
 #Function to set up Deribit client
 def deribit_set_up():
     logger.info(f"We are in Deribit: {mode} mode")
@@ -375,7 +351,6 @@ def display_balances(balances):
 #Function to create signature for certain querry
 def create_signature(query_string, secret_key):
     return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
-#Function for key extract
 
 #Function to sync time (generate an offset)
 def synchronize_time():
@@ -451,18 +426,43 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
     else:
         raise Exception(f'Error: {response.status_code}, Message: {response.text}')
 #Function to create an option order
-def create_option_order(client):
-    try:
-        # Construct the order
-        symbol=information_for_options()[-3]
-        order = client.create_market_buy_order(symbol,1)
+def place_option_order():
+    # Get option details
+    expiry_datetime, share_to_purchase, symbol, delta, contract_size = information_for_options()
 
-        print(f"Order created successfully on Deribit: {order}")
-        return order
+    if expiry_datetime and share_to_purchase and symbol:
+        client = deribit_set_up()  # Ensure the client is set up for trading
+        try:
+            # Define order parameters
+            order_params = {
+                'instrument_name': symbol,
+                'amount': 1,  # Convert share_to_purchase to int if necessary
+                'price': None,  # Set price if you want a specific limit price; use None for market order
+                'type': 'market',  # You can use 'limit' if you specify a price
+                'side': 'buy',  # Use 'sell' if you want to sell
+                'time_in_force': 'GoodTillCancel'  # Other options: 'ImmediateOrCancel', 'FillOrKill'
+            }
 
-    except Exception as e:
-        print(f"Failed to create order: {e}")
+            # Place the order
+            order_response = client.place_order(**order_params)
+
+            # Check the response
+            if 'error' in order_response:
+                logger.error(f"Error placing order: {order_response['error']}")
+                print("ERROR placing order")
+                return None
+            else:
+                print(f"Order placed successfully: {order_response}")
+                return order_response
+
+        except Exception as e:
+            logger.error(f"Failed to place order: {e}")
+            print("ERROR placing order")
+            return None
+    else:
+        print("No valid option details available to place an order")
         return None
+
 #Function for creating a hedging order 
 
 #Function to get the min contract amount
@@ -705,7 +705,15 @@ if __name__ == "__main__":
 
     print(f"Converting to Binance symbol: {symbol}")
     update_time_index_balance_sheet(json_file_path)
+    # Buy option
 
+    
+    # account = client.fetch_balance()
+    # print(account)
+    # x = client.create_order(symbol = symbol, type = "market", side = "buy", amount = 1)
+    # print(x)
+    # Start hedging
+    # hedging_with_spot(share_to_purchase)
 
     def job():
         synchronize_time()
@@ -721,16 +729,3 @@ if __name__ == "__main__":
         for _ in tqdm(range(runtime), desc="Time until next job (seconds)"):
                 schedule.run_pending()
                 time.sleep(1)
-
-    # Buy option
-    # account = client.fetch_balance()
-    # print(account)
-    # x = client.create_order(symbol = symbol, type = "market", side = "buy", amount = 1)
-    # print(x)
-    # Start hedging
-    # hedging_with_spot(share_to_purchase)
-    
-
-    
-
-    

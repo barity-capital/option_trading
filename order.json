@@ -1,25 +1,25 @@
 {
     "symbol": "XRPUSDT",
-    "orderId": 6313275835,
+    "orderId": 6332023086,
     "orderListId": -1,
-    "clientOrderId": "29JVHhnhuBO9HK1xe2K1Na",
-    "transactTime": 1721319027214,
+    "clientOrderId": "oxE8JaNSdQe8qT3G344WAQ",
+    "transactTime": 1721645118781,
     "price": "0.00000000",
-    "origQty": "219.00000000",
-    "executedQty": "219.00000000",
-    "cummulativeQuoteQty": "123.55980000",
+    "origQty": "47.00000000",
+    "executedQty": "47.00000000",
+    "cummulativeQuoteQty": "28.36920000",
     "status": "FILLED",
     "timeInForce": "GTC",
     "type": "MARKET",
-    "side": "SELL",
-    "workingTime": 1721319027214,
+    "side": "BUY",
+    "workingTime": 1721645118781,
     "fills": [
         {
-            "price": "0.56420000",
-            "qty": "219.00000000",
-            "commission": "0.12355980",
-            "commissionAsset": "USDT",
-            "tradeId": 630697983
+            "price": "0.60360000",
+            "qty": "47.00000000",
+            "commission": "0.04700000",
+            "commissionAsset": "XRP",
+            "tradeId": 632502029
         }
     ],
     "selfTradePreventionMode": "EXPIRE_MAKER"
