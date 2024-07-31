@@ -426,42 +426,129 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
     else:
         raise Exception(f'Error: {response.status_code}, Message: {response.text}')
 #Function to create an option order
-def place_option_order():
+
     # Get option details
+    exchange = deribit_set_up()
     expiry_datetime, share_to_purchase, symbol, delta, contract_size = information_for_options()
 
-    if expiry_datetime and share_to_purchase and symbol:
-        client = deribit_set_up()  # Ensure the client is set up for trading
-        try:
-            # Define order parameters
-            order_params = {
-                'instrument_name': symbol,
-                'amount': 1,  # Convert share_to_purchase to int if necessary
-                'price': None,  # Set price if you want a specific limit price; use None for market order
-                'type': 'market',  # You can use 'limit' if you specify a price
-                'side': 'buy',  # Use 'sell' if you want to sell
-                'time_in_force': 'GoodTillCancel'  # Other options: 'ImmediateOrCancel', 'FillOrKill'
-            }
+    if symbol is None:
+        print("No valid option symbol found.")
+        return
 
-            # Place the order
-            order_response = client.place_order(**order_params)
+    # Check if previous option has expired
+    last_expiry = read_last_order_expiry()
+    if last_expiry and datetime.utcnow() < last_expiry:
+        print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
+        return
 
-            # Check the response
-            if 'error' in order_response:
-                logger.error(f"Error placing order: {order_response['error']}")
-                print("ERROR placing order")
-                return None
-            else:
-                print(f"Order placed successfully: {order_response}")
-                return order_response
+    try:
+        # Define order details
+        order_type = 'market'  # Market order does not require a price
+        side = 'buy'  # or 'sell'
+        amount = 1  # Fixed amount
 
-        except Exception as e:
-            logger.error(f"Failed to place order: {e}")
-            print("ERROR placing order")
+        # Log details before placing order
+        print(f"Placing order with symbol: {symbol}, amount: {amount}")
+
+        # Place an option order
+        order = exchange.create_order(
+            symbol=symbol,
+            type=order_type,
+            side=side,
+            amount=amount,
+            price=None  # Market order does not require a price
+        )
+
+        # Store expiry datetime in the order log
+        write_order_log(order, expiry_datetime)
+
+        print(f"Order placed: {order}")
+
+    except ccxt.NetworkError as e:
+        print(f"Network error: {e}")
+    except ccxt.ExchangeError as e:
+        print(f"Exchange error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+def read_last_order_expiry():
+    try:
+        if not os.path.exists('order_log.json') or os.path.getsize('order_log.json') == 0:
             return None
-    else:
-        print("No valid option details available to place an order")
+        
+        with open('order_log.json', 'r') as f:
+            order_log = json.load(f)
+            expiry_str = order_log.get('expiry_datetime')
+            if expiry_str:
+                return datetime.fromisoformat(expiry_str)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Failed to read order log: {e}")
         return None
+
+def write_order_log(order, expiry_datetime):
+    order_log = {
+        'symbol': order['symbol'],
+        'order_id': order['id'],
+        'timestamp': order['timestamp'],
+        'amount': order['amount'],
+        'price': order.get('price', 'N/A'),  # Market orders may not have a price
+        'expiry_datetime': expiry_datetime.isoformat()  # Store expiry datetime
+    }
+    with open('order_log.json', 'w') as f:
+        json.dump(order_log, f, indent=4)
+
+def write_price_log(order):
+    price_log = {
+        'order_id': order['id'],
+        'price': order.get('price', 'N/A'),
+        'timestamp': datetime.utcfromtimestamp(order['timestamp'] / 1000).isoformat()
+    }
+    with open('price_log.json', 'w') as f:
+        json.dump(price_log, f, indent=4)
+
+def place_option_order(symbol,expiry_datetime):
+    # Get option details
+    exchange=deribit_set_up()
+    if symbol is None:
+        print("No valid option symbol found.")
+        return
+
+    # Check if previous option has expired
+    last_expiry = read_last_order_expiry()
+    if last_expiry and datetime.utcnow() < last_expiry:
+        print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
+        return
+
+    try:
+        # Define order details
+        order_type = 'market'  # Market order does not require a price
+        side = 'buy'  # or 'sell'
+        amount = 1  # Fixed amount
+
+        # Log details before placing order
+        print(f"Placing order with symbol: {symbol}, amount: {amount}")
+
+        # Place an option order
+        order = exchange.create_order(
+            symbol=symbol,
+            type=order_type,
+            side=side,
+            amount=amount,
+            price=None  # Market order does not require a price
+        )
+
+        # Store expiry datetime in the order log
+        write_order_log(order, expiry_datetime)
+        # Store price in the separate price log
+        write_price_log(order)
+
+        print(f"Order placed: {order}")
+
+    except ccxt.NetworkError as e:
+        print(f"Network error: {e}")
+    except ccxt.ExchangeError as e:
+        print(f"Exchange error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 #Function for creating a hedging order 
 
@@ -697,9 +784,9 @@ if __name__ == "__main__":
     clear_json_file("net_bal_change.json")
     json_file_path = 'nested_dataframes.json'
     #display_balances(balances)
-    expiry_datetime, share_to_purchase, symbol ,delta ,contract_size= information_for_options()
-    print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nDeribit symbol: {symbol}")
-    symbol = re.split('[-_]', symbol)[0]
+    expiry_datetime, share_to_purchase, symbol_option ,delta ,contract_size= information_for_options()
+    print(f"General Information: \nExpiry_Date : {expiry_datetime}, \nDeribit symbol: {symbol_option}")
+    symbol = re.split('[-_]', symbol_option)[0]
     # Append "USDT" to the first part of the split result
     symbol = symbol + "USDT"
 
@@ -708,17 +795,12 @@ if __name__ == "__main__":
     # Buy option
 
     
-    # account = client.fetch_balance()
-    # print(account)
-    # x = client.create_order(symbol = symbol, type = "market", side = "buy", amount = 1)
-    # print(x)
-    # Start hedging
-    # hedging_with_spot(share_to_purchase)
+   
 
     def job():
         synchronize_time()
         
-        
+        place_option_order(symbol_option,expiry_datetime)
         calculate_and_place_order(symbol)
         
     # Schedule the job every hour

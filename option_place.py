@@ -1,60 +1,92 @@
+import os
 import ccxt
-import time
+import json
 from datetime import datetime
+from functions import information_for_options, logger, deribit_set_up
 
 # Initialize exchange
-exchange = ccxt.deribit({
-    'apiKey': 'your_api_key',
-    'secret': 'your_secret_key',
-    'enableRateLimit': True,
-})
+exchange = deribit_set_up()
 
-# Define option details
-symbol = 'BTC-29JUL24-40000-C'  # Replace with your desired option contract
-order_type = 'limit'  # or 'market'
-side = 'buy'  # or 'sell'
-amount = 1  # number of contracts
-price = 100  # price per contract
+def read_last_order_expiry():
+    try:
+        if not os.path.exists('order_log.json') or os.path.getsize('order_log.json') == 0:
+            return None
+        
+        with open('order_log.json', 'r') as f:
+            order_log = json.load(f)
+            expiry_str = order_log.get('expiry_datetime')
+            if expiry_str:
+                return datetime.fromisoformat(expiry_str)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Failed to read order log: {e}")
+        return None
 
-# Place an option order
-order = exchange.create_order(
-    symbol=symbol,
-    type=order_type,
-    side=side,
-    amount=amount,
-    price=price
-)
+def write_order_log(order, expiry_datetime):
+    order_log = {
+        'symbol': order['symbol'],
+        'order_id': order['id'],
+        'timestamp': order['timestamp'],
+        'amount': order['amount'],
+        'price': order.get('price', 'N/A'),  # Market orders may not have a price
+        'expiry_datetime': expiry_datetime.isoformat()  # Store expiry datetime
+    }
+    with open('order_log.json', 'w') as f:
+        json.dump(order_log, f, indent=4)
 
-# Log the order details to a JSON file
-order_log = {
-    'symbol': symbol,
-    'order_id': order['id'],
-    'timestamp': order['timestamp'],
-    'amount': order['amount'],
-    'price': order['price']
-}
+def write_price_log(order):
+    price_log = {
+        'order_id': order['id'],
+        'price': order.get('price', 'N/A'),
+        'timestamp': datetime.utcfromtimestamp(order['timestamp'] / 1000).isoformat()
+    }
+    with open('price_log.json', 'w') as f:
+        json.dump(price_log, f, indent=4)
 
-import json
+def place_option_order():
+    # Get option details
+    expiry_datetime, share_to_purchase, symbol, delta, contract_size = information_for_options()
 
-with open('order_log.json', 'w') as f:
-    json.dump(order_log, f, indent=4)
+    if symbol is None:
+        print("No valid option symbol found.")
+        return
 
-print(f"Order placed: {order_log}")
+    # Check if previous option has expired
+    last_expiry = read_last_order_expiry()
+    if last_expiry and datetime.utcnow() < last_expiry:
+        print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
+        return
 
-# Function to check if the option has expired
-def check_option_expiry(symbol):
-    option_info = exchange.fetch_ticker(symbol)
-    current_time = datetime.utcnow()
+    try:
+        # Define order details
+        order_type = 'market'  # Market order does not require a price
+        side = 'buy'  # or 'sell'
+        amount = 1  # Fixed amount
 
-    # Deribit options include expiry date in the symbol, e.g., 'BTC-29JUL24-40000-C'
-    expiry_date_str = symbol.split('-')[1]  # '29JUL24'
-    expiry_date = datetime.strptime(expiry_date_str, '%d%b%y')
+        # Log details before placing order
+        print(f"Placing order with symbol: {symbol}, amount: {amount}")
 
-    return current_time > expiry_date
+        # Place an option order
+        order = exchange.create_order(
+            symbol=symbol,
+            type=order_type,
+            side=side,
+            amount=amount,
+            price=None  # Market order does not require a price
+        )
 
-# Check if the option has expired
-is_expired = check_option_expiry(symbol)
-if is_expired:
-    print(f"The option {symbol} has expired.")
-else:
-    print(f"The option {symbol} is still active.")
+        # Store expiry datetime in the order log
+        write_order_log(order, expiry_datetime)
+        # Store price in the separate price log
+        write_price_log(order)
+
+        print(f"Order placed: {order}")
+
+    except ccxt.NetworkError as e:
+        print(f"Network error: {e}")
+    except ccxt.ExchangeError as e:
+        print(f"Exchange error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+# Place the order
+place_option_order()

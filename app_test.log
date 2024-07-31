@@ -29606,3 +29606,59 @@
 2024-07-31 19:26:42,787 - functions - INFO - We are in Deribit: test mode
 2024-07-31 19:32:14,396 - __main__ - INFO - We are in Deribit: test mode
 2024-07-31 19:32:18,936 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 19:44:22,914 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:44:27,131 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 19:44:27,133 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:44:30,937 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:44:30,943 - __main__ - ERROR - Failed to place order: 'deribit' object has no attribute 'private_post_order'
+2024-07-31 19:46:11,412 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:46:15,607 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 19:46:15,609 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:46:19,469 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 19:46:19,475 - __main__ - ERROR - Failed to place order: 'deribit' object has no attribute 'order'
+2024-07-31 19:53:12,011 - main - INFO - We are in Deribit: test mode
+2024-07-31 19:56:14,809 - functions - INFO - We are in Deribit: test mode
+2024-07-31 19:56:54,716 - functions - INFO - We are in Deribit: test mode
+2024-07-31 19:58:33,918 - functions - INFO - We are in Deribit: test mode
+2024-07-31 19:59:13,422 - functions - INFO - We are in Deribit: test mode
+2024-07-31 19:59:17,214 - functions - INFO - ETH-23AUG24-4600-C
+2024-07-31 20:00:19,489 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:00:23,326 - functions - INFO - ETH-23AUG24-4600-C
+2024-07-31 20:00:58,540 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:01:02,392 - functions - INFO - ETH-23AUG24-4600-C
+2024-07-31 20:02:12,192 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:02:57,646 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:02:57,651 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:04:09,172 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:04:09,178 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:04:15,716 - functions - INFO - Order placed: {'info': {'is_liquidation': False, 'risk_reducing': False, 'creation_timestamp': '1722431056035', 'order_type': 'limit', 'order_state': 'open', 'contracts': '1.0', 'original_order_type': 'market', 'average_price': '0.0', 'reduce_only': False, 'post_only': False, 'last_update_timestamp': '1722431056035', 'filled_amount': '0.0', 'replaced': False, 'mmp': False, 'order_id': 'ETH-11681278848', 'amount': '1.0', 'web': False, 'api': True, 'instrument_name': 'ETH-23AUG24-4600-C', 'max_show': '1.0', 'time_in_force': 'good_til_cancelled', 'direction': 'buy', 'price': '0.049', 'label': '', 'trades': []}, 'id': 'ETH-11681278848', 'clientOrderId': None, 'timestamp': 1722431056035, 'datetime': '2024-07-31T13:04:16.035Z', 'lastTradeTimestamp': None, 'symbol': 'ETH/USD:ETH-240823-4600-C', 'type': 'limit', 'timeInForce': 'GTC', 'postOnly': False, 'side': 'buy', 'price': 0.049, 'stopPrice': None, 'triggerPrice': None, 'amount': 1.0, 'cost': 0.0, 'average': None, 'filled': 0.0, 'remaining': 1.0, 'status': 'open', 'fee': None, 'trades': [], 'fees': [], 'lastUpdateTimestamp': None, 'reduceOnly': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2024-07-31 20:05:53,083 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:05:53,089 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:09:29,363 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:09:29,368 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:10:43,353 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:10:43,358 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:11:13,089 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:11:13,094 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:12:36,545 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:12:36,550 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:13:37,878 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:13:37,883 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:13:58,296 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:13:58,301 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:15:25,845 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:15:25,850 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:16:07,308 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:16:07,313 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:17:32,694 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:17:32,700 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:17:52,687 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:17:52,692 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:18:10,924 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:18:10,929 - functions - INFO - We are in Deribit: test mode
+2024-07-31 20:19:10,370 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:19:14,658 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 20:19:14,660 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:19:14,665 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:21:17,960 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:21:22,205 - __main__ - INFO - Length of nested bal: 1
