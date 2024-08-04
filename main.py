@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 
 
-load_dotenv("config.env")
+load_dotenv("config2.env")
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -517,6 +517,8 @@ def place_option_order(symbol,expiry_datetime):
     if last_expiry and datetime.utcnow() < last_expiry:
         print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
         return
+    else: 
+        symbol=information_for_options()[2] #Reset symbol
 
     try:
         # Define order details
@@ -796,6 +798,7 @@ if __name__ == "__main__":
 
     
    
+    place_option_order(symbol_option,expiry_datetime)
 
     def job():
         synchronize_time()

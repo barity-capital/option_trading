@@ -29662,3 +29662,14 @@
 2024-07-31 20:19:14,665 - __main__ - INFO - We are in Deribit: test mode
 2024-07-31 20:21:17,960 - __main__ - INFO - We are in Deribit: test mode
 2024-07-31 20:21:22,205 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 20:25:22,499 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:25:26,625 - __main__ - INFO - Length of nested bal: 1
+2024-07-31 20:25:26,627 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 20:25:26,632 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 21:25:34,124 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 21:25:34,470 - __main__ - INFO - We are in Deribit: test mode
+2024-07-31 21:25:38,358 - __main__ - INFO - Current price of ETHUSDT: 3318.13
+2024-07-31 21:25:38,359 - __main__ - INFO - Share to purchase: 1.05975
+2024-07-31 21:25:38,360 - __main__ - INFO - The purchase order in USD is 3516.3882675
+2024-07-31 21:25:39,918 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-07-31 21:25:39,919 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
