@@ -68,7 +68,7 @@ handler = RotatingFileHandler(
 
 # Define a custom formatter and set it to the handler
 formatter = CustomFormatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    '%(asctime)s - %(name)s - %(levelname)s -[%(filename)s:%(lineno)d]- %(message)s',
     max_length=200  # Limit the message length to 100 characters
 )
 handler.setFormatter(formatter)
@@ -196,64 +196,53 @@ def deribit_set_up():
         client.set_sandbox_mode(True)
     return client
 #Function to retrieve info
-def information_for_options():
-    client=deribit_set_up()
+def information_for_options(crypto_type='ETH'):
+    client = deribit_set_up()
     try:
         markets = client.fetch_markets()
         server_time = client.fetch_time()
-        # Filter option markets
-        option_markets = [market for market in markets if market['type'] == 'option']
-        # print("Option markets:", option_markets)
+        
+        # Filter option markets for the specified cryptocurrency type
+        option_markets = [market for market in markets if market['type'] == 'option' and crypto_type in market['symbol']]
+        
         for i in option_markets:
-            # print(i["info"])
             filtered_list = []
-            expiry_timestamp = float(i['info']['expiration_timestamp'])/1000
+            expiry_timestamp = float(i['info']['expiration_timestamp']) / 1000
+            
             # Convert expiry timestamp to datetime
-            expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp) 
+            expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
 
             # Calculate current datetime plus 20 weeks
             current_datetime = datetime.utcnow()
             x_weeks_later = current_datetime + timedelta(weeks=time_delta)
-            # Check if expiry datetime is greater than 20 weeks later
+            
+            # Check if expiry datetime is within the next 20 weeks
             if expiry_datetime <= x_weeks_later:
                 filtered_list.append(i)
-                # if call option and strike is not none, add to list
+                
+                # Filter for call options with a valid strike price
                 second_filtered_list = []
                 for item in filtered_list:
-                    # if item["strike"] is not None and 
                     if item["optionType"] == "call" and item["strike"] is not None:
-
                         second_filtered_list.append(item)
-                        # third_filtered_list = []
-                        # # Loop through second filtered list and get contract with longest expiration
-                        # for item in second_filtered_list:
-                        #     expired_time = item["expiration_timestamp"]
-                            
-        #                     if item["expiration_timestamp"] is not None:
-        #                         third_filtered_list.append(item)
-                third_filtered_list = []
-                expiry_timestamp_list = []
+
                 if len(second_filtered_list) > 0:
+                    # Find the contract with the longest expiration
                     longest_expiry_contract = max(second_filtered_list, key=lambda x: x['expiry'])
 
-        # print(longest_expiry_contract)
-        # Contract symbol
-        symbol = longest_expiry_contract["id"]
-        # Timestamp of contract            
-        expire_time = float(longest_expiry_contract["info"]["expiration_timestamp"])
-        # convert expiration timestamp to datetime
-        expiry_datetime = datetime.utcfromtimestamp(expire_time/1000)
-        # Get delta
-        contract_delta = client.fetch_greeks(longest_expiry_contract["symbol"])
-        delta = contract_delta["info"]["greeks"]["delta"]
+                    # Extract contract details
+                    symbol = longest_expiry_contract["id"]
+                    expire_time = float(longest_expiry_contract["info"]["expiration_timestamp"])
+                    expiry_datetime = datetime.utcfromtimestamp(expire_time / 1000)
+                    contract_delta = client.fetch_greeks(longest_expiry_contract["symbol"])
+                    delta = contract_delta["info"]["greeks"]["delta"]
+                    contract_size = longest_expiry_contract["info"]["contract_size"]
+                    share_to_purchase = float(delta) * float(contract_size)
 
-        # Get contract size
-        # Calculate share to purchase
-        contract_size = longest_expiry_contract["info"]["contract_size"]
-        share_to_purchase = float(delta) * float(contract_size)
+                    return expiry_datetime, share_to_purchase, symbol, delta, contract_size
 
+        return None, None, None, None, None
 
-        return expiry_datetime, share_to_purchase, symbol ,delta ,contract_size
     except Exception as e:
         logger.error(f"Failed to retrieve options information: {e}")
         print("ERROR INFO for option")
@@ -425,51 +414,7 @@ def get_all_past_orders(symbol, start_time=None, end_time=None, limit=500):
         return response.json()
     else:
         raise Exception(f'Error: {response.status_code}, Message: {response.text}')
-#Function to create an option order
 
-    # Get option details
-    exchange = deribit_set_up()
-    expiry_datetime, share_to_purchase, symbol, delta, contract_size = information_for_options()
-
-    if symbol is None:
-        print("No valid option symbol found.")
-        return
-
-    # Check if previous option has expired
-    last_expiry = read_last_order_expiry()
-    if last_expiry and datetime.utcnow() < last_expiry:
-        print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
-        return
-
-    try:
-        # Define order details
-        order_type = 'market'  # Market order does not require a price
-        side = 'buy'  # or 'sell'
-        amount = 1  # Fixed amount
-
-        # Log details before placing order
-        print(f"Placing order with symbol: {symbol}, amount: {amount}")
-
-        # Place an option order
-        order = exchange.create_order(
-            symbol=symbol,
-            type=order_type,
-            side=side,
-            amount=amount,
-            price=None  # Market order does not require a price
-        )
-
-        # Store expiry datetime in the order log
-        write_order_log(order, expiry_datetime)
-
-        print(f"Order placed: {order}")
-
-    except ccxt.NetworkError as e:
-        print(f"Network error: {e}")
-    except ccxt.ExchangeError as e:
-        print(f"Exchange error: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
 def read_last_order_expiry():
     try:
         if not os.path.exists('order_log.json') or os.path.getsize('order_log.json') == 0:
@@ -504,10 +449,24 @@ def write_price_log(order):
     }
     with open('price_log.json', 'w') as f:
         json.dump(price_log, f, indent=4)
+    
+def get_minimum_amount_precision(symbol):
+    client = deribit_set_up()
+    try:
+        markets = client.fetch_markets()
+        for market in markets:
+            if market['id'] == symbol:
+                return market['limits']['amount']['min']
+    except Exception as e:
+        logger.error(f"Failed to retrieve minimum amount precision: {e}")
+        return None
+    
 
-def place_option_order(symbol,expiry_datetime):
+def place_option_order(symbol, expiry_datetime):
     # Get option details
-    exchange=deribit_set_up()
+    exchange = deribit_set_up()
+    min_precision = get_minimum_amount_precision(symbol)
+    
     if symbol is None:
         print("No valid option symbol found.")
         return
@@ -518,7 +477,7 @@ def place_option_order(symbol,expiry_datetime):
         print(f"Previous option has not yet expired. Waiting until {last_expiry}.")
         return
     else: 
-        symbol=information_for_options()[2] #Reset symbol
+        symbol = information_for_options()[2]  # Reset symbol
 
     try:
         # Define order details
@@ -526,21 +485,24 @@ def place_option_order(symbol,expiry_datetime):
         side = 'buy'  # or 'sell'
         amount = 1  # Fixed amount
 
+        # Check minimum amount precision
+        if min_precision and amount < min_precision:
+            amount = min_precision
+            logger.info(f"Adjusted order amount to meet minimum precision: {amount}")
+
         # Log details before placing order
         print(f"Placing order with symbol: {symbol}, amount: {amount}")
 
         # Place an option order
         order = exchange.create_order(
             symbol=symbol,
-            type=order_type,
+            type="market",
             side=side,
-            amount=amount,
-            price=None  # Market order does not require a price
+            amount=amount,  # Market order does not require a price
         )
 
         # Store expiry datetime in the order log
         write_order_log(order, expiry_datetime)
-        # Store price in the separate price log
         write_price_log(order)
 
         print(f"Order placed: {order}")

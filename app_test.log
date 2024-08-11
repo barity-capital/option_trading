@@ -29673,3 +29673,108 @@
 2024-07-31 21:25:38,360 - __main__ - INFO - The purchase order in USD is 3516.3882675
 2024-07-31 21:25:39,918 - __main__ - ERROR - Binance API Exception: APIError(code=-2010): Account has insufficient balance for requested action.
 2024-07-31 21:25:39,919 - __main__ - ERROR - Unexpected error: An error occurred: APIError(code=-2010): Account has insufficient balance for requested action.
+2024-08-11 13:11:52,580 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:11:57,151 - __main__ - INFO -[main.py:715]- Length of nested bal: 2
+2024-08-11 13:11:57,173 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:11:57,186 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:13:51,882 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:13:56,573 - __main__ - INFO -[main.py:715]- Length of nested bal: 1
+2024-08-11 13:13:56,574 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:13:56,585 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:18:20,081 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:18:20,086 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:19:44,658 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:19:49,085 - __main__ - INFO -[main.py:715]- Length of nested bal: 1
+2024-08-11 13:19:49,086 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:19:49,091 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:20:21,443 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:20:25,709 - __main__ - INFO -[main.py:715]- Length of nested bal: 1
+2024-08-11 13:20:25,711 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:20:25,716 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:22:59,561 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:23:04,092 - __main__ - INFO -[main.py:715]- Length of nested bal: 1
+2024-08-11 13:23:04,093 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:25:38,515 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:25:42,982 - __main__ - INFO -[main.py:733]- Length of nested bal: 1
+2024-08-11 13:25:42,983 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:25:42,989 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:25:44,968 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:25:49,118 - __main__ - INFO -[main.py:549]- Placing market order with symbol: ETH-6SEP24-3800-C, amount: 1
+2024-08-11 13:25:52,255 - __main__ - INFO -[main.py:564]- Market order placed successfully: {'info': {'is_liquidation': False, 'risk_reducing': False, 'order_type': 'limit', 'creation_timestamp': '1723357552846', 'order_state': 'open', 'contracts': '1.0', 'original_order_type': 'market', 'average_price': '0.0', 'reduce_only': False, 'post_only': False, 'last_update_timestamp': '1723357552846', 'filled_amount': '0.0', 'replaced': False, 'mmp': False, 'order_id': 'ETH-12814679287', 'web': False, 'api': True, 'instrument_name': 'ETH-6SEP24-3800-C', 'max_show': '1.0', 'time_in_force': 'good_til_cancelled', 'direction': 'buy', 'amount': '1.0', 'price': '0.204', 'label': '', 'trades': []}, 'id': 'ETH-12814679287', 'clientOrderId': None, 'timestamp': 1723357552846, 'datetime': '2024-08-11T06:25:52.846Z', 'lastTradeTimestamp': None, 'symbol': 'ETH/USD:ETH-240906-3800-C', 'type': 'limit', 'timeInForce': 'GTC', 'postOnly': False, 'side': 'buy', 'price': 0.204, 'stopPrice': None, 'triggerPrice': None, 'amount': 1.0, 'cost': 0.0, 'average': None, 'filled': 0.0, 'remaining': 1.0, 'status': 'open', 'fee': None, 'trades': [], 'fees': [], 'lastUpdateTimestamp': None, 'reduceOnly': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2024-08-11 13:27:09,066 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:27:13,821 - __main__ - INFO -[main.py:727]- Length of nested bal: 1
+2024-08-11 13:27:13,822 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:27:13,828 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:27:15,715 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:27:19,617 - __main__ - INFO -[main.py:544]- Placing market order with symbol: ETH-6SEP24-3800-C, amount: 1
+2024-08-11 13:27:22,376 - __main__ - ERROR -[main.py:563]- Exchange error: deribit {"jsonrpc":"2.0","error":{"message":"Invalid params","data":{"param":"time_in_force","reason":"illegal value for time_in_force"},"code":-32602},"testnet":true,"usIn":1723357642968632,"usOut":1723357642968994,"usDiff":362}
+2024-08-11 13:28:08,743 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:28:13,196 - __main__ - INFO -[main.py:726]- Length of nested bal: 1
+2024-08-11 13:28:13,197 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:28:13,203 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:28:15,217 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:28:19,095 - __main__ - INFO -[main.py:544]- Placing market order with symbol: ETH-6SEP24-3800-C, amount: 1
+2024-08-11 13:28:22,223 - __main__ - INFO -[main.py:557]- Market order placed successfully: {'info': {'is_liquidation': False, 'risk_reducing': False, 'order_type': 'limit', 'creation_timestamp': '1723357702819', 'order_state': 'open', 'contracts': '1.0', 'original_order_type': 'market', 'average_price': '0.0', 'reduce_only': False, 'post_only': False, 'last_update_timestamp': '1723357702819', 'filled_amount': '0.0', 'replaced': False, 'mmp': False, 'order_id': 'ETH-12814839451', 'web': False, 'api': True, 'instrument_name': 'ETH-6SEP24-3800-C', 'max_show': '1.0', 'time_in_force': 'good_til_cancelled', 'direction': 'buy', 'amount': '1.0', 'price': '0.1265', 'label': '', 'trades': []}, 'id': 'ETH-12814839451', 'clientOrderId': None, 'timestamp': 1723357702819, 'datetime': '2024-08-11T06:28:22.819Z', 'lastTradeTimestamp': None, 'symbol': 'ETH/USD:ETH-240906-3800-C', 'type': 'limit', 'timeInForce': 'GTC', 'postOnly': False, 'side': 'buy', 'price': 0.1265, 'stopPrice': None, 'triggerPrice': None, 'amount': 1.0, 'cost': 0.0, 'average': None, 'filled': 0.0, 'remaining': 1.0, 'status': 'open', 'fee': None, 'trades': [], 'fees': [], 'lastUpdateTimestamp': None, 'reduceOnly': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2024-08-11 13:29:45,000 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:29:49,552 - __main__ - INFO -[main.py:738]- Length of nested bal: 1
+2024-08-11 13:29:49,553 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:29:49,559 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:29:51,443 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:29:58,773 - __main__ - ERROR -[main.py:541]- Could not fetch the ask price for symbol: ETH-6SEP24-3800-C
+2024-08-11 13:32:07,791 - main - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:32:07,797 - main - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:32:09,784 - main - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:34:07,688 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:34:07,695 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:34:09,579 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:36:28,655 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:36:28,662 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:36:30,692 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:39:30,925 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:39:30,933 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:39:49,582 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:39:49,589 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:39:51,422 - functions - INFO - We are in Deribit: test mode
+2024-08-11 13:53:59,965 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:04,443 - __main__ - INFO -[main.py:694]- Length of nested bal: 1
+2024-08-11 13:54:04,444 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:04,450 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:06,362 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:13,224 - __main__ - ERROR -[main.py:497]- Could not fetch the ask price for symbol: XRP_USDC-25OCT24-1d32-C
+2024-08-11 13:54:42,489 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:51,762 - __main__ - INFO -[main.py:694]- Length of nested bal: 1
+2024-08-11 13:54:51,763 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:51,769 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:54:54,296 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:55:09,417 - __main__ - ERROR -[main.py:497]- Could not fetch the ask price for symbol: XRP_USDC-27SEP24-1d32-C
+2024-08-11 13:56:00,433 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:56:04,862 - __main__ - INFO -[main.py:688]- Length of nested bal: 1
+2024-08-11 13:56:04,863 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:56:04,868 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:56:06,880 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:56:10,995 - __main__ - INFO -[main.py:502]- Adjusted order amount to meet minimum precision: 1000.0
+2024-08-11 13:58:39,097 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:58:43,828 - __main__ - INFO -[main.py:688]- Length of nested bal: 1
+2024-08-11 13:58:43,829 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:58:43,835 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:59:05,776 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:59:09,939 - __main__ - INFO -[main.py:688]- Length of nested bal: 1
+2024-08-11 13:59:09,940 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:59:09,946 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:59:11,882 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 13:59:16,287 - __main__ - INFO -[main.py:502]- Adjusted order amount to meet minimum precision: 1000.0
+2024-08-11 14:00:39,936 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:02:38,867 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-11 14:02:38,867 - __main__ - INFO -[main.py:188]- The base URL: https://test.deribit.com/api/v2/
+2024-08-11 14:02:38,872 - __main__ - ERROR -[main.py:240]- Failed to retrieve options information: 'deribit' object has no attribute 'public_get_instruments'
+2024-08-11 14:03:30,453 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:03:35,135 - __main__ - INFO -[main.py:688]- Length of nested bal: 1
+2024-08-11 14:03:35,136 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:03:35,142 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:03:37,013 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:03:41,389 - __main__ - INFO -[main.py:502]- Adjusted order amount to meet minimum precision: 1000.0
+2024-08-11 14:06:17,183 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:06:21,619 - __main__ - INFO -[main.py:677]- Length of nested bal: 1
+2024-08-11 14:06:21,620 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:06:21,626 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-11 14:06:23,692 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode

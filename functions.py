@@ -246,28 +246,49 @@ def information_for_options():
 def create_signature(query_string, secret_key):
     return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
 
-def place_option_order(client, symbol, side, quantity, price=None, order_type='LIMIT'):
-    try:
-        order = client.create_order(
-            symbol=symbol,
-            type=order_type,
-            side=side,
-            amount=quantity,
-            price=price
-        )
-        return order
-    except BinanceAPIException as e:
-        logger.error(f"Binance API Exception: {e}")
-    except BinanceOrderException as e:
-        logger.error(f"Binance Order Exception: {e}")
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-    return None
 
-def log_order_to_json(order, filepath='orders_log.json'):
+def get_minimum_amount_precision(symbol):
+    client = deribit_set_up()
     try:
-        with open(filepath, 'a') as file:
-            json.dump(order, file, indent=4)
-            file.write('\n')
-    except IOError as e:
-        logger.error(f"Error writing order to JSON file: {e}")
+        markets = client.fetch_markets()
+        for market in markets:
+            if market['id'] == symbol:
+                return market['limits']['amount']['min']
+    except Exception as e:
+        logger.error(f"Failed to retrieve minimum amount precision: {e}")
+        return None
+    
+def read_last_order_expiry():
+    try:
+        if not os.path.exists('order_log.json') or os.path.getsize('order_log.json') == 0:
+            return None
+        
+        with open('order_log.json', 'r') as f:
+            order_log = json.load(f)
+            expiry_str = order_log.get('expiry_datetime')
+            if expiry_str:
+                return datetime.fromisoformat(expiry_str)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Failed to read order log: {e}")
+        return None
+
+def write_order_log(order, expiry_datetime):
+    order_log = {
+        'symbol': order['symbol'],
+        'order_id': order['id'],
+        'timestamp': order['timestamp'],
+        'amount': order['amount'],
+        'price': order.get('price', 'N/A'),  # Market orders may not have a price
+        'expiry_datetime': expiry_datetime.isoformat()  # Store expiry datetime
+    }
+    with open('order_log.json', 'w') as f:
+        json.dump(order_log, f, indent=4)
+
+def write_price_log(order):
+    price_log = {
+        'order_id': order['id'],
+        'price': order.get('price', 'N/A'),
+        'timestamp': datetime.utcfromtimestamp(order['timestamp'] / 1000).isoformat()
+    }
+    with open('price_log.json', 'w') as f:
+        json.dump(price_log, f, indent=4)
