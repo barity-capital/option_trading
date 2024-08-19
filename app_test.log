@@ -29778,3 +29778,21 @@
 2024-08-11 14:06:21,620 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
 2024-08-11 14:06:21,626 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
 2024-08-11 14:06:23,692 - __main__ - INFO -[main.py:176]- We are in Deribit: test mode
+2024-08-18 17:41:49,846 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:41:54,462 - __main__ - INFO -[main.py:797]- Length of nested bal: 1
+2024-08-18 17:41:54,463 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:41:54,468 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:41:56,163 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:42:07,951 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:42:11,858 - __main__ - INFO -[main.py:797]- Length of nested bal: 1
+2024-08-18 17:42:11,859 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:42:11,865 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 17:42:13,573 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 18:42:20,703 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 18:42:20,738 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 18:42:22,902 - __main__ - INFO -[main.py:177]- We are in Deribit: test mode
+2024-08-18 18:42:26,899 - __main__ - INFO -[main.py:736]- Current price of ETHUSDT: 2644.27
+2024-08-18 18:42:26,900 - __main__ - INFO -[main.py:737]- Share to purchase: 14.28405
+2024-08-18 18:42:26,900 - __main__ - INFO -[main.py:740]- The purchase order in USD is 37770.8848935
+2024-08-18 18:42:28,534 - __main__ - ERROR -[main.py:623]- Binance API Exception: APIError(code=-2019): Margin is insufficient.
+2024-08-18 18:42:28,535 - __main__ - ERROR -[main.py:788]- Unexpected error: An error occurred: APIError(code=-2019): Margin is insufficient.

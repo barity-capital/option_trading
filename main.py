@@ -1,5 +1,6 @@
 import ccxt
 from binance.client import Client
+from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceOrderException
 from datetime import datetime, timedelta
 import logging
@@ -546,9 +547,9 @@ def get_min_notional(symbol):
     raise ValueError("No value for min_notional")            
     return None
 
-
-def create_hedging_order(symbol, side, share_to_purchase):
+def create_hedging_order_spot(symbol, side, share_to_purchase):
     # Connect to Binance testnet
+    global total_order
     client = Client(binance_api_key, binance_api_secret, testnet=testnet)
 
     # Get current price of the symbol
@@ -587,8 +588,49 @@ def create_hedging_order(symbol, side, share_to_purchase):
     total_order+=1
     return order
 
+def create_hedging_order_future(symbol,side,share_to_purchase):
+       # Connect to Binance testnet
+    global total_order
+    client = Client(binance_api_key, binance_api_secret, testnet=testnet)
 
-def calculate_and_place_order(symbol):
+    # Get current price of the symbol
+    
+
+    # Adjust the share_to_purchase according to LOT_SIZE constraints
+    min_qty, step_size = get_lot_size(symbol)
+    if abs(share_to_purchase) < min_qty:
+        raise ValueError(f"Quantity {share_to_purchase} is less than the minimum lot size {min_qty}")
+    share_to_purchase = round_step_size(share_to_purchase, step_size)
+
+    
+
+    
+    # Create a market order
+    try:
+        order = client.futures_create_order(
+            symbol=symbol,
+            side=SIDE_BUY,
+            type=ORDER_TYPE_MARKET,
+            quantity=share_to_purchase
+        )
+        print("Order placed successfully.")
+        output_file = "order.json"
+        with open(output_file, 'w') as file:
+            json.dump(order, file, indent=4)
+        logger.info(f"Order details saved to {output_file}")
+    except BinanceAPIException as e:
+        print(f"Binance API Exception: {e}")
+        logger.error(f"Binance API Exception: {e}")
+        raise Exception(f"An error occurred: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred: {e}")
+        raise Exception(f"An error occurred: {e}")
+    total_order+=1
+    return order
+
+def calculate_and_place_order_spot(symbol):
+    print(f"Placing Hedging order with Spot")
     try:
         # Load old delta value from file
         with open("old_delta.json", 'r') as file:
@@ -648,7 +690,7 @@ def calculate_and_place_order(symbol):
         # Create hedging order
         
         print(f"Create {side} hedging order for: {symbol} for {round(abs(share_to_purchase), 6)}")
-        create_hedging_order(symbol, side, round(abs(share_to_purchase), 6))
+        create_hedging_order_spot(symbol, side, round(abs(share_to_purchase), 6))
         update_time_index_balance_sheet(json_file_path)
 
         # Update old delta value
@@ -666,6 +708,84 @@ def calculate_and_place_order(symbol):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
 
+def calculate_and_place_order_future(symbol):
+    print(f"Placing Hedging order with Future")
+    try:
+        # Load old delta value from file
+        with open("old_delta.json", 'r') as file:
+            old_delta = json.load(file)
+        old_delta = float(old_delta)
+
+        # Initialize Binance client
+        
+        client = Client(binance_api_key, binance_api_secret, testnet=testnet)
+
+        # Get current price for the symbol
+        ticker = client.get_symbol_ticker(symbol=symbol)
+        current_price = float(ticker['price'])
+
+        # Initialize Deribit client and fetch new delta and contract size
+        option_info = information_for_options()
+        new_delta = float(option_info[-2])
+        contract_size = float(option_info[-1])
+
+        # Calculate share to purchase
+        share_to_purchase = (new_delta - old_delta) * contract_size * 1
+
+        # Log current price and share to purchase
+        logger.info(f"Current price of {symbol}: {current_price}")
+        logger.info(f"Share to purchase: {share_to_purchase}")
+
+        notional_value = current_price * share_to_purchase
+        logger.info(f"The purchase order in USD is {abs(notional_value)}")
+
+        # Check if there's a change in delta
+        if share_to_purchase == 0:
+            logger.info(f"{datetime.now()}: No change in delta. No order placed.")
+            return
+
+        # Check if notional value is sufficient
+        if abs(notional_value) < 6:
+            logger.warning(f"Notional value: {notional_value} too low, can't place order")
+            return
+
+        
+
+        # Check if the share to purchase meets minimum lot size
+        min_qty, _ = get_lot_size(symbol)
+        if abs(share_to_purchase) < min_qty:
+            logger.warning(f"Share to purchase too small: {share_to_purchase}")
+            return
+
+        # Determine the order side and check for sufficient liquidity if selling
+        side = "BUY" if new_delta > old_delta else "SELL"
+        liquid = get_account_balances(symbol)
+        if side == "SELL":
+            if not liquid or liquid[1]['Free'] < abs(share_to_purchase):
+                logger.warning(f"Not enough {symbol} to trade: Needed to sell {abs(share_to_purchase)}, only have {liquid[1]['Free']}")
+                logger.warning(f"Sell all {liquid[1]['Free']}")
+                share_to_purchase=liquid[1]['Free']
+
+        # Create hedging order
+        
+        print(f"Create {side} hedging order for: {symbol} for {round(abs(share_to_purchase), 6)}")
+        create_hedging_order_future(symbol, side, round(abs(share_to_purchase), 6))
+        update_time_index_balance_sheet(json_file_path)
+
+        # Update old delta value
+        old_delta = new_delta
+        logger.info(f"Updated old_delta to: {old_delta}")
+        with open("old_delta.json", "w") as json_file:
+            json.dump(old_delta, json_file)
+
+    except json.JSONDecodeError:
+        logger.error("Error loading old delta value from file.")
+    except KeyError as e:
+        logger.error(f"Missing key in option information: {e}")
+    except ValueError as e:
+        logger.error(f"Value error: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
 
 def update_time_index_balance_sheet(json_file_path):
     try: 
@@ -766,7 +886,7 @@ if __name__ == "__main__":
         synchronize_time()
         
         place_option_order(symbol_option,expiry_datetime)
-        calculate_and_place_order(symbol)
+        calculate_and_place_order_future(symbol)
         
     # Schedule the job every hour
     schedule.every(runtime).seconds.do(job)
